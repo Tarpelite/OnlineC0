@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>金坷垃C0编译器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h3>
+                    金坷垃C0编译器<small>Tarpe酋长</small>
+                </h3>
+                <ul class="nav nav-list"><li class="divider"></li></ul>
+                <h5>施工进度：</h5>
+                <div class="progress progress-striped">
+                        <div class="progress progress-striped active">
+                                <div class="progress-bar progress-bar-success" role="progressbar"
+                                     aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                                     style="width: 30%;">
+                                    <span class="sr-only">30% 完成</span>
+                                </div>
+                            </div>
+                    </div>
+                <ul class="breadcrumb">
+                    <li>
+                         <a href="/lexer/">词法分析</a>
+                    </li>
+                    <li>
+                         <a href="/OPG/">算符优先文法分析</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">语法分析</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="row clearfix">
+            <div class="col-md-6 column">
+                <h4>
+                    算符优先文法分析
+                </h4>
+                <ul class="nav nav-list"><li class="divider"></li></ul>
+                <dl>
+                    <dt>
+                        默认文法
+                    </dt>
+                    <dd>
+                        <li>G[E]:</li>
+                        <li>E -> E+T|T</li>
+                        <li>T -> T*F|F</li>
+                        <li>F ->(E)|i </li>
+                    </dd>
+                    <dt>
+                        自定义文法规则
+                    </dt>
+                    <dd>
+                       <li>用字母表示非终结符</li>
+                       <li>'->'或':='表示赋值</li>
+                       <li>'|'表示选择</li>
+                       <li>当然，你还需要确定开始符号</li>
+                    </dd>
+                    <dt>
+                        输入格式
+                    </dt>
+                    <dd>
+                       <li>如需自定义文法，请仿照默认文法规则输入，并勾选使用自定义文法</li>
+                       <li>输入该文法下的测试语句</li>
+                    </dd>
+                    <dt>
+                        输出格式
+                    </dt>
+                    <dd>
+                       <li>产生式集合</li>
+                       <li>FirstVt集合</li>
+                       <li>LastVt集合</li>
+                       <li>算符优先关系表</li>
+                       <li>分析步骤表</li>
+                    </dd>
+                </dl>
+                <form class="form-horizontal" role="form" action="/OPG/" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        {% csrf_token %}
+                         <label for="customed-grammary">自定义文法：</label>
+                         <textarea class="form-control" id="customed-grammary" rows="10" name="grammary" >
+                         </textarea>
+                    </div>
+                    <div class="form-group">
+                        {% csrf_token %}
+                         <label for="InputFile1" >自定义文法文件(可选项,不超过2.5M)</label>
+                         <input type="file" id="InputFile1" name="gramma_file" accept=".txt,.c0"/>
+                    </div>
+                    <div class="form-group">
+                        {% csrf_token %}
+                         <label for="customed-start">自定义文法开始符号：</label>
+                         <input type="text" id="customed-start" name="start" >
+                    </div>
+                    <div class="checkbox" name="check">
+                        {% csrf_token %}
+                         <label><input type="checkbox" name="check"/>使用自定义文法</label>
+                    </div>
+                    <div class="form-group">
+                        {% csrf_token %}
+                         <label for="test-code">测试语句：</label>
+                         <textarea class="form-control"  placeholder="i+i" id="test-code" rows="5" name="code" >
+                         </textarea>
+                    </div>
+                    <div class="form-group">
+                        {% csrf_token %}
+                         <label for="InputFile2" >测试语句文件(可选项,不超过2.5M)</label>
+                         <input type="file" id="InputFile2" name="code_file" accept=".txt,.c0"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-default">一键分析</button>
+                </form>
+            </div>
+
+            <div class="col-md-6 column">
+                <div class="table-responsive">
+                   {{ 表格1 }}
+                </div>
+                <div class="table-responsive">
+                   {{ 表格2 }}
+                </div>
+                <div class="table-responsive">
+                    {{ 表格3 }}
+                </div>
+                <div class="table-responsive">
+                    {{ 表格4 }}
+                </div>
+                <div class="table-responsive">
+                    {{ 表格5 }}
+                </div>
+                <div class="table-responsive">
+                    {{ 表格6 }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+    <script>
+        {% for msg in messages %}
+            alert('{{ msg.message }}')
+        {% endfor %}
+    </script>            
+    {% endif %}
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>

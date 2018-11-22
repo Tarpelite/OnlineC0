@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>金坷垃C0编译器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+        <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="page-header">
+                            <h1>
+                                金坷垃C0编译器 <small>tarpe酋长</small>
+                            </h1>
+                        </div>
+                        <h3>施工进度</h3>
+                        <progress value="20" max="100"></progress>
+                        <ul class="nav nav-pills">
+                            <li class="active">
+                                <a href="#">词法分析</a>
+                            </li>
+                            <li>
+                                <a href="#">算符优先文法</a>
+                            </li>
+                            <li class="disabled">
+                                <a href="#">语法分析</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span6">
+                        <form>
+                            <fieldset>
+                                 <legend>金坷垃C0源码</legend> <label>请小心不要踩雷</label>
+                                 <form action="/lexer/" method="POST">
+                                    {% csrf_token %}
+                                 <input type="text" name="source_code" > <label class="checkbox"><input type="checkbox" /> 保证没有存心迫害编译器？</label> <button type="submit" class="btn">一键编译</button>
+                                 </form>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="span6">
+                        <h2>
+                            词法分析结果<small>[类型，值]</small>
+                        </h2>
+                        <textarea>
+                           {{ 结果 }}
+                        </textarea>
+                        <p>
+                            <a class="btn" href="#">联系酋长</a>
+                        </p>
+                    </div>
+                </div>
+            </div>       
+            <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+            <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>

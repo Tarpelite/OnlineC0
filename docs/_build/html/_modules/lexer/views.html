@@ -1,0 +1,150 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_cn">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lexer.views &#8212; OnlineC0  文档</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>lexer.views 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="k">import</span> <span class="n">render</span>
+<span class="kn">from</span> <span class="nn">django.views.decorators</span> <span class="k">import</span> <span class="n">csrf</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="k">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">django.template</span> <span class="k">import</span> <span class="n">loader</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="k">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">.lexer</span> <span class="k">import</span> <span class="n">C0lexer</span>
+
+<span class="c1"># Create your views here.</span>
+
+<div class="viewcode-block" id="complie"><a class="viewcode-back" href="../../lexer/views.html#lexer.views.complie">[文档]</a><span class="k">def</span> <span class="nf">complie</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        对POST请求进行处理，去掉表单中多余的字符后交由词法分析器，</span>
+<span class="sd">        再将渲染的结果返回给客户端</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">context</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;source_code&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;test_file&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">size</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;=</span> <span class="mf">2.5</span><span class="o">*</span><span class="mi">1024</span><span class="p">:</span><span class="c1">#控制源文件大小</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;上传文件大于2.5m&quot;</span><span class="p">)</span>
+            <span class="n">pro</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">pro</span> <span class="o">=</span> <span class="n">pro</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pro</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s1">&#39;source_code&#39;</span><span class="p">]</span>
+        <span class="n">pro</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pro</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pro&quot;</span><span class="p">,</span><span class="n">pro</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pro</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">context</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;不能提交空代码&#39;</span>
+        <span class="n">check</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;check&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+            <span class="n">pro</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pro</span><span class="p">)</span>
+            <span class="n">lexy</span> <span class="o">=</span> <span class="n">C0lexer</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">lexy</span><span class="o">.</span><span class="n">web_input</span><span class="p">(</span><span class="n">pro</span><span class="p">)</span>
+            <span class="n">lexy</span><span class="o">.</span><span class="n">web_word_analyze</span><span class="p">()</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;结果&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lexy</span><span class="o">.</span><span class="n">web_reply</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">context</span><span class="p">[</span><span class="s1">&#39;结果&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+             <span class="n">messages</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;小伙子不要搞事情，请确认代码没有安全问题&quot;</span><span class="p">)</span><span class="c1">#安全控制</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;lexer/lexery.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span></div>
+            
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">OnlineC0</a></h1>
+
+
+
+
+
+
+
+
+<h3>导航</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">C0 编译器进度</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lexer/views.html">前端交互页面views</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lexer/lexer.html">词法分析器Lexer</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">模块代码</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="转向" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Tarpelite.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

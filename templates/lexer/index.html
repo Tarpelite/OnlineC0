@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>酋长的C0编译器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <h1>Hello Page</h1>
+    <form action="/lexer/" method="POST">
+         {% csrf_token %}
+         请输入测试代码：<input type="text" name='source_code'>
+        <br>
+         <button type="submit" name="一键编译">一键编译</button>
+         <textarea>{{ 结果 }}</textarea>
+    </form>
+    
+</body>
+</html>
