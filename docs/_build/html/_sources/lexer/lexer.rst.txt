@@ -19,6 +19,8 @@
 
     .. automethod:: getchar()
 
+    .. automethod:: tobin()
+
     .. automethod:: error()
 
     .. automethod:: word_analyze()

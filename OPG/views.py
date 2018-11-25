@@ -55,6 +55,7 @@ def complie(request):
         if not code:
             messages.warning(request, "测试语句不能为空")
         opga.InputGrammar(gramma)
+        print(gramma)
         opga.FindVtVn()
         opga.setPriorityTable()
         priority_table = opga.web_output_priority_table()
@@ -74,7 +75,7 @@ def complie(request):
         context['表格6'] = mark_safe(step_table)
         #print("priority_table:")
         #print(mark_safe(priority_table))
-        print("results:")
-        print(results)
-        print(step_table)
+        #print("results:")
+        #print(results)
+        #print(step_table)
     return render(request, 'OPGA/opgay.html', context=context)

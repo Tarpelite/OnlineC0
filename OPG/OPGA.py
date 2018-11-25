@@ -150,7 +150,7 @@ class OPGA:
 
     def FindVtVn(self):
         for g in self.default_grammary:
-            if g[0] not in self.Vn:
+            if g[0] not in self.Vn and g[0] != " ":
                 self.Vn.append(g[0])
         for g in self.default_grammary:
             g = g.replace("->","")
@@ -159,10 +159,10 @@ class OPGA:
                 if ch not in self.Vn :
                     if ch != '|':
                         if ch not in self.Vn :
-                            if ch not in self.Vt:
+                            if ch not in self.Vt and ch !=" ":
                                 self.Vt.append(ch)
     
-    def F(self, U, b):
+    def __F(self, U, b):
         for lis in self.table:
             if lis[0] == U and lis[1] == b:
                 return lis[2]
@@ -179,7 +179,7 @@ class OPGA:
         '''
             将符号对(U, b)插入STACK栈中
         '''
-        if not self.F(U, b):
+        if not self.__F(U, b):
             self.setF(U, b)
             self.stack.append([U, b])
             return
@@ -409,13 +409,18 @@ class OPGA:
         body = "<tbody>"
         line = "<tr><td></td>"
         for vt in self.Vt:
-            line += "<td>" + str(vt) + "</td>"
+            if vt != " ":
+                line += "<td>" + str(vt) + "</td>"
         line += "</tr>"
         body += line
         for vt1 in self.Vt:
+            if vt1 == " ":
+                continue
             line = "<tr>"
             line += "<td>" + str(vt1) + "</td>"
             for vt2 in self.Vt:
+                if vt2 == " ":
+                    continue
                 operator = self.judge(vt1, vt2)
                 line += "<td>" + str(operator) + "</td>"
             line += "</tr>"
@@ -444,7 +449,7 @@ class OPGA:
     
     def find_leftest_substring(self, text:str):
         '''
-            寻找当前子串的最左子串
+            寻找当前子串的最左素短语
         '''
         vt_set = [["#",-1]]
         n = len(text)
@@ -698,6 +703,7 @@ if __name__ == "__main__":
     '''
     opga = OPGA()
     text = "E->E+T|T\nT->T*F|F\nF->(E)|i"
+    #text = "E->E+E\nE->i"
     opga.InputGrammar(text)
     print(opga.default_grammary)
     opga.FindVtVn()
@@ -730,6 +736,7 @@ if __name__ == "__main__":
     print("==================================")
     opga.setStart('E')
     text = "i*((i+i)*i)+(i+i)"
+    #text = "i+i"
     opga.input_test_txt(text)
     results, status = opga.analyze()
     print(text+"的分析过程")
@@ -750,3 +757,4 @@ if __name__ == "__main__":
         #print("".ljust(76,'-'))
         #print("|"+str(res[0]).ljust(14)+"|"+str(res[1]).ljust(14)+"|"+str(res[2]).ljust(14)+"|"+str(res[3]).ljust(14)+"|"str(res[4]).ljust(14)+"|")
     print(status)
+    print(opga.web_output_priority_table())

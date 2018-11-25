@@ -234,22 +234,33 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            出错提示</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">REPLY</span> <span class="o">+=</span> <span class="s2">&quot;Invalid Syntax</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">REPLY</span> <span class="o">+=</span> <span class="s2">&quot;Invalid Syntax&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid Syntax&quot;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="C0lexer.tobin"><a class="viewcode-back" href="../../lexer/lexer.html#lexer.lexer.C0lexer.tobin">[文档]</a>    <span class="k">def</span> <span class="nf">tobin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            十进制转二进制</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;0b&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="C0lexer.getsym"><a class="viewcode-back" href="../../lexer/lexer.html#lexer.lexer.C0lexer.getsym">[文档]</a>    <span class="k">def</span> <span class="nf">getsym</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clearToken</span><span class="p">()</span>
+        <span class="n">lim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SOURCE_TEXT</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">&gt;=</span> <span class="n">lim</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">isSpace</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">isNewLine</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">isTab</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">&gt;=</span> <span class="n">lim</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLetter</span><span class="p">():</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLetter</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">isDigit</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isKeyWord</span><span class="p">():</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;关键字&#39;</span><span class="p">,</span>
                       <span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;symbol&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;标识符&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isDigit</span><span class="p">():</span>
             <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">isDigit</span><span class="p">():</span>
@@ -261,9 +272,9 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">break</span>
             <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;unsigend int&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;常数（二进制）&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tobin</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">))]</span>
             <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;常数（小数）&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isMinus</span><span class="p">():</span>
             <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
@@ -278,11 +289,11 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">break</span>
             <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;单字符运算符&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;常数（二进制）&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tobin</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">))]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;常数（小数）&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isPlus</span><span class="p">():</span>
             <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
@@ -296,11 +307,11 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">break</span>
             <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;单字符运算符&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;常数（二进制）&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tobin</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">))]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;常数（小数）&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isQuote</span><span class="p">():</span>
             <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -317,66 +328,66 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;字符串&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">]</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLess</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEqu</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;=&quot;</span><span class="p">]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;双字符运算符&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;=&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;单字符运算符&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isMore</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEqu</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;=&quot;</span><span class="p">]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;双字符运算符&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;=&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;单字符运算符&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isMark</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEqu</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;!=&quot;</span><span class="p">,</span> <span class="s2">&quot;!=&quot;</span><span class="p">]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;双字符运算符&quot;</span><span class="p">,</span> <span class="s2">&quot;!=&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;!&quot;</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">]</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;单字符运算符&quot;</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEqu</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEqu</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-                <span class="n">res</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">]</span>
+                <span class="n">res</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;双字符运算符&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">]</span>
+                <span class="n">res</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;单字符运算符&quot;</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isMult</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;单字符运算符&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isDiv</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;单字符运算符&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLpar</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;分界符&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isRpar</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;分界符&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isBigLpar</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="s1">&#39;{&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;分界符&#39;</span><span class="p">,</span> <span class="s1">&#39;{&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isBigRpar</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;分界符&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isComma</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;,&#39;</span><span class="p">,</span><span class="s1">&#39;,&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;分界符&#39;</span><span class="p">,</span><span class="s1">&#39;,&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isSemi</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;分界符&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isDot</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;分界符&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isColon</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;分界符&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">False</span>
