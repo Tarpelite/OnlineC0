@@ -1,4 +1,6 @@
-from ..lexer.lexer import C0lexer
+from lexer import C0lexer
+import os
+import sys
 
 
 class special_lexer(C0lexer):
@@ -185,7 +187,8 @@ class special_lexer(C0lexer):
         '''
         i = 1
         for res in self.RESULT:
-            print(str(i), "行："+ str(res[0]) + "个:" + str(res[1]) + "类型:" + str(res[2]) + "值:" + str(res[3]))
+            print("行：" + str(res[0]) + " 个: " + str(res[1]) + " 类型: " + str(res[2]) + " 值: " + str(res[3]))
+        print(self.error_report())
     
     def output(self):
         '''
@@ -195,14 +198,32 @@ class special_lexer(C0lexer):
         (_ , tempfilename) = os.path.split(self.INPUT_FILE_NAME)
         (filename, _) = os.path.splitext(tempfilename)
         OUTPUT_FILE_NAME = filename + "wout.txt"
+        OUTPUT_ERROR_MESSAGE = filename + "error.txt"
         with open(OUTPUT_FILE_NAME, "w+") as f:
-            f.writelines(str(length))
+            f.write(str(length)+"\n")
             for res in self.RESULT:
-                f.writelines(str(res[3]) + " " + str(res[4]))
+                f.write(str(res[0]) + " " + str(res[1]) + " " + str(res[2]) + " " + str(res[3])+"\n")
         f.close()
+        #   如果有报错
+        if len(self.error_message_box) > 0:
+            with open(OUTPUT_ERROR_MESSAGE, "w+") as f:
+                f.write(str(len(self.error_message_box))+"\n")
+                for msg in self.error_message_box:
+                    f.write(msg+ "\n")
+            f.close()
+
 
 if __name__ == "__main__":
     #  debugging and test_case
+    FILE_NAME = "/home/tarpe/shared/grammar_analysis/test1.txt"
+    lexer = special_lexer(FILE_NAME)
+    lexer.word_analyze()
+    lexer.print_result()
+    lexer.output()
+
+
+    
+
     
 
 

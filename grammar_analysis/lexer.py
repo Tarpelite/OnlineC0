@@ -34,6 +34,7 @@ class C0lexer:
         '''
         with open(self.INPUT_FILE_NAME, "r") as f:
             self.SOURCE_TEXT = f.read()
+        print(self.SOURCE_TEXT)
     
     def clearToken(self):
         '''
