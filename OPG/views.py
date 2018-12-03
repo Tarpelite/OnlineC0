@@ -54,7 +54,7 @@ def complie(request):
             code = request.POST['code']
         if not code:
             messages.warning(request, "测试语句不能为空")
-        opga.InputGrammar(gramma)
+        opga.InputGrammar(gramma.strip())
         print(gramma)
         opga.FindVtVn()
         opga.setPriorityTable()

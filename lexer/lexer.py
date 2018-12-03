@@ -1,5 +1,7 @@
 # _*_ encoding:utf-8 _*_
 import os
+
+
 class C0lexer:
     """
     """
@@ -13,7 +15,7 @@ class C0lexer:
                 "while", "main", "return", "printf", "scanf"]
     p = 0
 
-    def __init__(self, INPUT_FILE_NAME:str):
+    def __init__(self, INPUT_FILE_NAME: str):
         '''
         '''
         self.INPUT_FILE_NAME = INPUT_FILE_NAME
@@ -179,9 +181,9 @@ class C0lexer:
 
     def isInvalidchar(self):
         ch = self.curChar()
-        if ch == '\a' or ch == '\b' or ch == '\t' or ch == '\n' or ch =='\v' or ch == '\f' or ch == '\r' or ch == '\0':
+        if ch == '\a' or ch == '\b' or ch == '\t' or ch == '\n' or ch == '\v' or ch == '\f' or ch == '\r' or ch == '\0':
             return True
-        elif ord(ch) >=1 and ord(ch) <=31:
+        elif ord(ch) >= 1 and ord(ch) <= 31:
             return True
         elif ord(ch) == -1 or ord(ch) == 255:
             return True
@@ -202,7 +204,7 @@ class C0lexer:
         self.REPLY += "Invalid Syntax"+self.TOKEN+"\n"
         print("Invalid Syntax")
     
-    def tobin(self,x:int):
+    def tobin(self, x: int):
         '''
             十进制转二进制
         '''
@@ -225,7 +227,7 @@ class C0lexer:
                 res = ['关键字',
                       self.TOKEN.upper()]
             else:
-                res = ["标识符",self.TOKEN]
+                res = ["标识符", self.TOKEN]
         elif self.isDigit():
             flag = 0
             while self.isDigit():
@@ -263,7 +265,8 @@ class C0lexer:
             flag = 0
             self.getchar()
             while self.isDigit():
-                flag = 0
+                if flag = 0:
+                    flag = 1
                 self.getchar()
                 if self.isDot():
                     if flag == 1:
@@ -320,9 +323,9 @@ class C0lexer:
             self.getchar()
             if self.isEqu():
                 self.getchar()
-                res=["双字符运算符", "=="]
+                res = ["双字符运算符", "=="]
             else:
-                res=["单字符运算符", "="]
+                res = ["单字符运算符", "="]
         elif self.isMult():
             self.getchar()
             res = ['单字符运算符', '*']
@@ -343,7 +346,7 @@ class C0lexer:
             res = ['分界符', '}']
         elif self.isComma():
             self.getchar()
-            res = ['分界符',',']
+            res = ['分界符', ',']
         elif self.isSemi():
             self.getchar()
             res = ['分界符', ';']
@@ -384,7 +387,6 @@ class C0lexer:
             self.REPLY += "WordAnalysis Completed!" + "\n"
         else:
             self.REPLY += "Unknown invalid syntax!" + "\n"
-
     
     def web_reply(self):
         '''
@@ -409,14 +411,15 @@ class C0lexer:
         (_ , tempfilename) = os.path.split(self.INPUT_FILE_NAME)
         (filename, _) = os.path.splitext(tempfilename)
         OUTPUT_FILE_NAME = filename + "wout.txt"
-        with open(OUTPUT_FILE_NAME , "w+") as f:
+        with open(OUTPUT_FILE_NAME, "w+") as f:
             f.writelines(str(length))
             for res in self.RESULT:
-                f.writelines(str(res[0])+" "+ str(res[1]))
+                f.writelines(str(res[0]) + " " + str(res[1]))
         f.close()
 
+
 if __name__ == "__main__":
-    #INPUT_FILE_NAME = str(input("请输入C0源文件:"))
+    #  INPUT_FILE_NAME = str(input("请输入C0源文件:"))
     '''
     INPUT_FILE_NAME = "Example0.txt"
     lexyyy = C0lexer(INPUT_FILE_NAME)

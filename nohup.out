@@ -1,0 +1,18 @@
+[19/Nov/2018 09:09:06] "GET /lexer/ HTTP/1.1" 200 4390
+[19/Nov/2018 09:11:02] "GET /lexer/ HTTP/1.1" 200 4390
+Not Found: /
+[19/Nov/2018 11:08:27] "GET / HTTP/1.1" 404 2033
+Not Found: /
+[19/Nov/2018 11:39:32] "GET / HTTP/1.1" 404 2033
+[19/Nov/2018 11:41:40] "GET /lexer/ HTTP/1.1" 200 4390
+[19/Nov/2018 11:43:57] "GET /lexer/ HTTP/1.1" 200 4390
+[19/Nov/2018 11:44:05] "GET /lexer/ HTTP/1.1" 200 4390
+[19/Nov/2018 11:45:04] "GET /lexer HTTP/1.1" 301 0
+[19/Nov/2018 11:45:05] "GET /lexer HTTP/1.1" 301 0
+[19/Nov/2018 11:45:06] "GET /lexer/ HTTP/1.1" 200 4390
+[19/Nov/2018 11:47:23] "GET /lexer/ HTTP/1.1" 200 4390
+Not Found: /favicon.ico
+[19/Nov/2018 11:47:24] "GET /favicon.ico HTTP/1.1" 404 2087
+[19/Nov/2018 11:48:25] "GET /lexer/ HTTP/1.1" 200 4390
+[19/Nov/2018 11:48:53] "POST /lexer/ HTTP/1.1" 200 4469
+[19/Nov/2018 11:49:11] "POST /lexer/ HTTP/1.1" 200 4471

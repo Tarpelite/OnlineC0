@@ -20,6 +20,7 @@ class OPGA:
         self.priority_table = []
         self.text = ""
         self.start = "E"
+        self.use_default_grammary = True
 
     def InputGrammar(self, g:str):
         '''
@@ -49,6 +50,7 @@ class OPGA:
                         self.default_grammary.append(grammary_new)
             else:
                 self.default_grammary.append(tos)
+        self.use_default_grammary = False
         return True
     
     def check_grammary(self, g:str):
@@ -442,6 +444,11 @@ class OPGA:
         '''
             查表比较两个vt的优先级大小
         '''
+        if self.use_default_grammary:
+            if vt1 == '+' and (vt2 == '+' or vt2 == '*'):
+                return False
+            if vt1 == '*' and (vt2 == '*' or vt2 == '+'):
+                return False
         for record in self.priority_table:
             if record[0] == vt1 and record[1] == vt2:
                 return record[2]
@@ -451,6 +458,16 @@ class OPGA:
         '''
             寻找当前子串的最左素短语
         '''
+        if self.use_default_grammary:
+            if '++' in text:
+                return False, False
+            if '**' in text:
+                return False, False
+            if '+*' in text:
+                return False, False
+            if '*+' in text:
+                return False, False
+
         vt_set = [["#",-1]]
         n = len(text)
         for i in range(n):
@@ -561,6 +578,15 @@ class OPGA:
                 return token_stack[i]
         return False
     
+    def isInDict(self, ch:str):
+        '''
+            检查当前字符是否属合法(在文法中出现过)
+        '''
+        if ch in self.Vn or ch in self.Vt:
+            return True
+        return False
+
+    
     def replace(self, x_old:str, res:str, index:int, handle_len:int):
         '''
             替换旧字符串中指定index位置的handle为res
@@ -580,6 +606,30 @@ class OPGA:
             if ch in self.Vt:
                 return ch
         return False
+    
+    def _dictcheck(self, token_stack:str):
+        '''
+            检查当前输入栈中的所有字符
+        '''
+        for ch in token_stack:
+            if not self.isInDict(ch):
+                return False
+        return True
+    
+    def _default_special_check(self, token_stack:str):
+        '''
+            对默认语法中的一些特殊情况进行的特别检查
+        '''
+        if '++' in token_stack:
+            return False
+        if '**' in token_stack:
+            return False
+        if '+*' in token_stack:
+            return False
+        if '*+' in token_stack:
+            return False
+        return True
+
 
     def analyze(self):
         '''
@@ -602,6 +652,14 @@ class OPGA:
             step = [i]
             ch = self.curchar(p)
             while self.curchar(p) not in self.Vt:
+                if self.curchar(p) not in self.Vn:
+                    step.append(token_stack)
+                    operator = "Failed!"
+                    step.append(operator)
+                    step.append(ch)
+                    step.append(self.text[p+1:])
+                    steps.append(step)
+                    return steps, "Failed!"
                 ch = self.curchar(p)
                 token_stack += ch
                 p += 1
@@ -610,6 +668,8 @@ class OPGA:
             if self.popvt(token_stack):
                 pvt = self.popvt(token_stack)
                 operator = self.judge(pvt, ch)
+            elif self._dictcheck(token_stack):
+                pass
             else:
                 print(token_stack+"测试语句出错！")
                 return steps, "Failed!"
@@ -704,7 +764,7 @@ if __name__ == "__main__":
     opga = OPGA()
     text = "E->E+T|T\nT->T*F|F\nF->(E)|i"
     #text = "E->E+E\nE->i"
-    opga.InputGrammar(text)
+    #opga.InputGrammar(text)
     print(opga.default_grammary)
     opga.FindVtVn()
     print("Vt:")
@@ -735,7 +795,7 @@ if __name__ == "__main__":
     '''
     print("==================================")
     opga.setStart('E')
-    text = "i*((i+i)*i)+(i+i)"
+    text = "i++"
     #text = "i+i"
     opga.input_test_txt(text)
     results, status = opga.analyze()
@@ -757,4 +817,4 @@ if __name__ == "__main__":
         #print("".ljust(76,'-'))
         #print("|"+str(res[0]).ljust(14)+"|"+str(res[1]).ljust(14)+"|"+str(res[2]).ljust(14)+"|"+str(res[3]).ljust(14)+"|"str(res[4]).ljust(14)+"|")
     print(status)
-    print(opga.web_output_priority_table())
+    #print(opga.web_output_priority_table())
