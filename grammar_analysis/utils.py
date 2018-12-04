@@ -60,6 +60,7 @@ class special_lexer(C0lexer):
                 self.line_cnt += 1
                 self.word_cnt = 0
             self.p += 1
+            self.clearToken()
             if self.p >= lim:
                 return False
         res = [self.line_cnt, self.word_cnt]
@@ -341,7 +342,7 @@ class norm_C0_compiler():
         if wd[2] == '专用符号' and wd[3] == '(':
             self._getword()
             wd = self._curword()
-            if  wd[2] != '+' or wd[2] != '-' or wd[2] != '标识符':
+            if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符':
                 self._error('应为表达式')
                 return False
             else:
@@ -349,7 +350,7 @@ class norm_C0_compiler():
                 if not res:
                     return False
             wd = self._curword()
-            if  wd[2] != '专用符号' or wd[3] != ')':
+            if wd[2] != '专用符号' or wd[3] != ')':
                 self._error('应为)')
                 return False
             self._getword()
@@ -386,7 +387,7 @@ class norm_C0_compiler():
         else:
             flag = 1
         wd = self._curword()
-        while wd[2] == '专用符号' and wd[3] == ',' :
+        while wd[2] == '专用符号' and wd[3] == ',':
             self._getword()
             wd = self._curword()
             if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符':
@@ -412,7 +413,7 @@ class norm_C0_compiler():
         res = self.s_value_param_list()
         if not res:
             return False
-        res = self._curword()
+        wd = self._curword()
         if wd[2] != '专用符号' or wd[3] != ')':
             self._error("应为)")
             return False
@@ -509,7 +510,7 @@ class norm_C0_compiler():
             return False
         self._getword()
         wd = self._curword()
-        if wd[2] != '专用符号' or wd[3] != '=' :
+        if wd[2] != '专用符号' or wd[3] != '=':
             self._error("应为=")
             return False
         self._getword()
@@ -646,7 +647,7 @@ class norm_C0_compiler():
         if not res:
             return False
         wd = self._curword()
-        while wd[2] == '*' or wd[2] == '/' :
+        while wd[2] == '*' or wd[2] == '/':
             self._getword()
             res = self.s_factor()
             if not res:
@@ -668,7 +669,7 @@ class norm_C0_compiler():
         wd = self._curword()
         while wd[2] == '+' or wd[2] == '-':
             self._getword()
-            res = self.s_statement()
+            res = self.s_item()
             if not res:
                 return False
             wd = self._curword()
@@ -707,6 +708,11 @@ class norm_C0_compiler():
         '''
         wd = self._curword()
         if wd[2] == '关键字' and wd[3] == 'INT':
+            self._getword()
+            wd = self._curword()
+            if wd[2] != '标识符':
+                self._error("缺少参数声明")
+                return False
             self._getword()
             wd = self._curword()
             while wd[2] == '专用符号' and wd[3] == ',':
@@ -846,10 +852,12 @@ class norm_C0_compiler():
             self._error("应为标识符")
             return False
         self._getword()
+        wd = self._curword()
         if wd[2] != '专用符号' or wd[3] != '=':
             self._error('应为=')
             return False
         self._getword()
+        wd = self._curword()
         if wd[2] != '整数':
             self._error("应为整数")
             return False
@@ -890,17 +898,20 @@ class norm_C0_compiler():
         if wd[2] == '关键字' and wd[3] == 'CONST':
             res = self.s_constant_description()
             if not res:
-                return False
-            p0 = self.words_p
+                self.words_p = p0
+                wd = self._curword()
             wd = self._curword()
+            p0 = self.words_p
         if wd[2] == '关键字' and wd[3] == 'INT':
             self._getword()
             wd = self._curword()
             if wd[2] == '标识符':
                 res = self.s_variable_description()
                 if not res:
-                    return False
-                wd = self._curword()
+                    self.words_p = p0
+                    wd = self._curword()
+                else:
+                    wd = self._curword()
             else:
                 self.words_p = p0
                 wd = self._curword()
@@ -926,18 +937,19 @@ class norm_C0_compiler():
 if __name__ == "__main__":
     #  debugging and test_case
     
-    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test1.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test2.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     lexer.print_result()
     lexer.output()
 
-    input_file_name = "/home/tarpe/shared/OnlineC0/test1wout.txt"
+    input_file_name = "/home/tarpe/shared/OnlineC0/test2wout.txt"
     compiler = norm_C0_compiler()
     compiler.read(input_file_name)
     print(compiler.words)
     if not compiler.s_program():
-        print(compiler.error_msg_box)
+        for msg in compiler.error_msg_box:
+            print(msg)
 
 
 
