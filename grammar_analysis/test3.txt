@@ -1,0 +1,15 @@
+const a = 1, b = 2;
+int c, d;
+int main()
+{
+    c = 2;
+    scanf(d);
+    if ( c>1 )
+    {
+        printf("%d", a);
+    }
+    else{
+        printf("%d%", b);
+    }
+    return;
+}

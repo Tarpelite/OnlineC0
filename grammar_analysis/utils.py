@@ -124,6 +124,13 @@ class special_lexer(C0lexer):
                 res.extend(["关系运算符", "<="])
             else:
                 res.extend(["关系运算符", "<"])
+        elif self.isMore():
+            self.getchar()
+            if self.isEqu():
+                self.getchar()
+                res.extend(["关系运算符", ">="])
+            else:
+                res.extend(["关系运算符", ">"])
         elif self.isMark():
             self.getchar()
             if self.isEqu():
@@ -342,7 +349,7 @@ class norm_C0_compiler():
         if wd[2] == '专用符号' and wd[3] == '(':
             self._getword()
             wd = self._curword()
-            if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符':
+            if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符' and wd[2] != '整数':
                 self._error('应为表达式')
                 return False
             else:
@@ -390,7 +397,7 @@ class norm_C0_compiler():
         while wd[2] == '专用符号' and wd[3] == ',':
             self._getword()
             wd = self._curword()
-            if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符':
+            if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符' and wd[2] != '整数':
                 self._error("应为表达式")
                 return False
             else:
@@ -431,7 +438,7 @@ class norm_C0_compiler():
             return False
         self._getword()
         wd = self._curword()
-        if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符':
+        if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符' and wd[2] != '整数':
             self._error("应为表达式")
             return False
         res = self.s_condition()
@@ -452,7 +459,7 @@ class norm_C0_compiler():
            ＜条件＞ ::=  ＜表达式＞＜关系运算符＞＜表达式＞｜＜表达式＞ 
         '''
         wd = self._curword()
-        if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符':
+        if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符' and wd[2] != '整数':
             self._error("应为表达式")
             return False
         res = self.s_expression()
@@ -464,7 +471,7 @@ class norm_C0_compiler():
         else:
             self._getword()
             wd = self._curword()
-            if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符':
+            if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符' and wd[2] != '整数':
                 return False
             res = self.s_expression()
             if not res:
@@ -544,6 +551,7 @@ class norm_C0_compiler():
             if wd[2] != '专用符号' or wd[3] != '}':
                 self._error("应为}")
                 return False
+            self._getword()
             return True
         elif wd[2] == '关键字' and wd[3] == 'RETURN':
             res = self.s_return()
@@ -813,7 +821,7 @@ class norm_C0_compiler():
         if not res:
             return False
         wd = self._curword()
-        while wd[2] == '关键字' and wd[3] == ',':
+        while wd[2] == '专用符号' and wd[3] == ',':
             self._getword()
             wd = self._curword()
             if wd[2] != '标识符':
@@ -906,12 +914,14 @@ class norm_C0_compiler():
             self._getword()
             wd = self._curword()
             if wd[2] == '标识符':
+                self.words_p = p0
                 res = self.s_variable_description()
                 if not res:
                     self.words_p = p0
                     wd = self._curword()
                 else:
                     wd = self._curword()
+                    p0 = self.words_p
             else:
                 self.words_p = p0
                 wd = self._curword()
@@ -937,13 +947,13 @@ class norm_C0_compiler():
 if __name__ == "__main__":
     #  debugging and test_case
     
-    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test2.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test3.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     lexer.print_result()
     lexer.output()
 
-    input_file_name = "/home/tarpe/shared/OnlineC0/test2wout.txt"
+    input_file_name = "/home/tarpe/shared/OnlineC0/test3wout.txt"
     compiler = norm_C0_compiler()
     compiler.read(input_file_name)
     print(compiler.words)
