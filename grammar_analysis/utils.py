@@ -275,6 +275,7 @@ class norm_C0_compiler():
         '''
         wd = self._curword()
         msg = "line: " + wd[0] + " word: " + wd[1] + hint 
+        self.error_msg_box.append(msg)
     
 
     def s_read(self):
@@ -336,6 +337,7 @@ class norm_C0_compiler():
             ＜返回语句＞ ::=  return [ ‘(’＜表达式＞’)’ ] 
         '''
         self._getword()
+        wd = self._curword()
         if wd[2] == '专用符号' and wd[3] == '(':
             self._getword()
             wd = self._curword()
@@ -422,12 +424,13 @@ class norm_C0_compiler():
            ＜循环语句＞ ::=  while‘（’＜条件＞‘）’＜语句＞ 
         '''
         self._getword()
+        wd = self._curword()
         if wd[2] != '专用符号' or wd[3] != '(':
             self._error("应为（")
             return False
         self._getword()
         wd = self._curword()
-        if wd[2] != '+' and wd[2] != '-' and wd[2] !='标识符':
+        if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符':
             self._error("应为表达式")
             return False
         res = self.s_condition()
@@ -447,45 +450,495 @@ class norm_C0_compiler():
         '''
            ＜条件＞ ::=  ＜表达式＞＜关系运算符＞＜表达式＞｜＜表达式＞ 
         '''
-        
-
-
-        
-            
-
-
-
-
-            
-
-
-
-
-
-
-            
-         
-
-
-
-
+        wd = self._curword()
+        if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符':
+            self._error("应为表达式")
+            return False
+        res = self.s_expression()
+        if not res:
+            return False
+        wd = self._curword()
+        if wd[2] != '关系运算符':
+            return True
+        else:
+            self._getword()
+            wd = self._curword()
+            if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符':
+                return False
+            res = self.s_expression()
+            if not res:
+                return False
+            return True
     
+    def s_condition_statement(self):
+        '''
+           ＜条件语句＞ ::=  if‘（’＜条件＞‘）’＜语句＞〔else＜语句＞〕 
+        '''
+        self._getword()
+        wd = self._curword()
+        if wd[2] != '专用符号' or wd[3] != '(':
+            self._error("应为(")
+            return False
+        self._getword()
+        res = self.s_condition()
+        if not res:
+            return False
+        wd = self._curword()
+        if wd[2] != '专用符号' or wd[3] != ')':
+            self._error("应为)")
+            return False
+        self._getword()
+        res = self.s_statement()
+        if not res:
+            return False
+        wd = self._curword()
+        if wd[2] == '关键字' and wd[3] == 'ELSE':
+            self._getword()
+            res = self.s_statement()
+            if not res:
+                return False
+        return True
+    
+    def s_assignment_statement(self):
+        '''
+            ＜赋值语句＞ ::=  ＜标识符＞＝＜表达式＞
+        '''
+        wd = self._curword()
+        if wd[2] != '标识符':
+            self._error("应为标识符")
+            return False
+        self._getword()
+        wd = self._curword()
+        if wd[2] != '专用符号' or wd[3] != '=' :
+            self._error("应为=")
+            return False
+        self._getword()
+        res = self.s_expression()
+        if not res:
+            return False
+        return True
+    
+    def s_statement(self):
+        '''
+        ＜语句＞ ::= ＜条件语句＞｜＜循环语句＞｜‘{’<语句序列>‘}’｜＜函数调用语句＞;
+｜＜赋值语句＞; | <返回语句>;｜＜读语句＞;｜＜写语句＞;｜＜空＞
+        '''
+        wd = self._curword()
+        if wd[2] == '关键字' and wd[3] == 'IF':
+            res = self.s_condition_statement()
+            if not res:
+                return False
+            return True
+        elif wd[2] == '关键字' and wd[3] == 'WHILE':
+            res = self.s_while_statement()
+            if not res:
+                return False
+            return True
+        elif wd[2] == '专用符号' and wd[3] == '{':
+            self._getword()
+            res = self.s_statement_series()
+            if not res:
+                return False
+            wd = self._curword()
+            if wd[2] != '专用符号' or wd[3] != '}':
+                self._error("应为}")
+                return False
+            return True
+        elif wd[2] == '关键字' and wd[3] == 'RETURN':
+            res = self.s_return()
+            if not res:
+                return False
+            wd = self._curword()
+            if wd[2] != '专用符号' or wd[3] != ';':
+                self._error("缺少;")
+                return False
+            self._getword()
+            return True
+        elif wd[2] == '关键字' and wd[3] == 'SCANF':
+            res = self.s_read()
+            if not res:
+                return False
+            wd = self._curword()
+            if wd[2] != '专用符号' or wd[3] != ';':
+                self._error("缺少;")
+                return False
+            self._getword()
+            return True
+        elif wd[2] == '关键字' and wd[3] == 'PRINTF':
+            res = self.s_write()
+            if not res:
+                return False
+            wd = self._curword()
+            if wd[2] != '专用符号' or wd[3] != ';':
+                self._error("缺少;")
+                return False
+            self._getword()
+            return True
+        elif wd[2] == '标识符':
+            p0 = self.words_p
+            self._getword()
+            wd = self._curword()
+            if wd[2] == '专用符号' and wd[3] == '(':
+                self.words_p = p0
+                res = self.s_function_call_statement()
+                if not res:
+                    return False
+                wd = self._curword()
+                if wd[2] != '专用符号' or wd[3] != ';':
+                    self._error("缺少;")
+                    return False
+                self._getword()
+                return True
+            elif wd[2] == '专用符号' and wd[3] == '=':
+                self.words_p = p0
+                res = self.s_assignment_statement()
+                if not res:
+                    return False
+                wd = self._curword()
+                if wd[2] != '专用符号' or wd[3] != ';':
+                    self._error("缺少;")
+                    return False
+                self._getword()
+                return True
+        else:
+            return True
+    
+    def s_factor(self):
+        '''
+            ＜因子＞ ::=  ＜标识符＞｜‘（’＜表达式＞‘）’｜＜整数＞｜＜函数调用语句＞
+        '''
+        wd = self._curword()
+        if wd[2] == '专用符号' and wd[3] == '(':
+            self._getword()
+            res = self.s_expression()
+            if not res:
+                return False
+            wd = self._curword()
+            if wd[2] != '专用符号' or wd[3] != ')':
+                self._error("应为)")
+                return False
+            self._getword()
+            return True
+        elif wd[2] == '整数':
+            self._getword()
+            return True
+        elif wd[2] == '标识符':
+            p0 = self.words_p
+            self._getword()
+            wd = self._curword()
+            if wd[2] == '专用符号' and wd[3] == '(':
+                self.words_p = p0
+                res = self.s_function_call_statement()
+                if not res:
+                    return False
+                return True
+            else:
+                return True
+        else:
+            self._error("应为标识符或（或整数")
+            return False
+    
+    def s_item(self):
+        '''
+            ＜项＞ ::=  ＜因子＞{＜乘法运算符＞＜因子＞}
+        '''
+        res = self.s_factor()
+        if not res:
+            return False
+        wd = self._curword()
+        while wd[2] == '*' or wd[2] == '/' :
+            self._getword()
+            res = self.s_factor()
+            if not res:
+                return False
+            wd = self._curword()
+        return True
+    
+    def s_expression(self):
+        '''
+            ＜表达式＞ ::=  〔＋｜－〕＜项＞｛＜加法运算符＞＜项＞｝
+        '''
+        wd = self._curword()
+        if wd[2] == '+' or wd[2] == '-':
+            self._getword()
+            wd = self._curword()
+        res = self.s_item()
+        if not res:
+            return False
+        wd = self._curword()
+        while wd[2] == '+' or wd[2] == '-':
+            self._getword()
+            res = self.s_statement()
+            if not res:
+                return False
+            wd = self._curword()
+        return True
+    
+    def s_main_function(self):
+        '''
+            ＜主函数＞ ::=  ( void ｜int ) main ＜参数＞＜复合语句＞
+        '''
+        wd = self._curword()
+        if wd[2] != '关键字':
+            self._error("应为void或int")
+            return False
+        else:
+            if wd[3] != 'VOID' and wd[3] != 'INT' :
+                self._error("应为void或int")
+                return False
+        self._getword()
+        wd = self._curword()
+        if wd[2] != '关键字' or wd[3] != 'MAIN':
+            self._error("应为main")
+            return False
+        self._getword()
+        res = self.s_param()
+        if not res:
+            return False
+        res = self.s_compound_statement()
+        if not res:
+            return False
+        return True
+    
+    def s_param_list(self):
+        '''
+            ＜参数表＞ ::=  int ＜标识符＞｛，int ＜标识符＞} | 空
+                  //参数表可以为空
+        '''
+        wd = self._curword()
+        if wd[2] == '关键字' and wd[3] == 'INT':
+            self._getword()
+            wd = self._curword()
+            while wd[2] == '专用符号' and wd[3] == ',':
+                self._getword()
+                wd = self._curword()
+                if wd[2] != '关键字' or wd[3] != 'INT':
+                    self._error("逗号后还需要继续输入参数")
+                    return False
+                self._getword()
+                wd = self._curword()
+                if wd[2] != '标识符':
+                    self._error("应为标识符")
+                    return False
+                self._getword()
+                wd = self._curword()
+        return True
+    
+    def s_param(self):
+        '''
+            ＜参数＞ ::=  ‘(’＜参数表＞‘)’
+        '''
+        wd = self._curword()
+        if wd[2] != '专用符号' or wd[3] != '(':
+            self._error("应为(")
+            return False
+        self._getword()
+        res = self.s_param_list()
+        if not res:
+            return False
+        wd = self._curword()
+        if wd[2] != '专用符号' or wd[3] != ')':
+            self._error("应为)")
+            return False
+        self._getword()
+        return True
+    
+    def s_compound_statement(self):
+        '''
+            ＜复合语句＞ ::=  ‘{’〔＜常量说明部分＞〕〔＜变量说明部分＞〕＜语句序列＞‘}’
+        '''
+        wd = self._curword()
+        if wd[2] != '专用符号' or wd[3] != '{':
+            self._error("应为{")
+            return False
+        self._getword()
+        wd = self._curword()
+        if wd[2] == '关键字' and wd[3] == 'CONST':
+            res = self.s_constant_description()
+            if not res:
+                return False
+            wd = self._curword()
+        if wd[2] == '关键字' and wd[3] == 'INT':
+            res = self.s_variable_description()
+            if not res:
+                return False
+            wd = self._curword()
+        res = self.s_statement_series()
+        if not res:
+            return False
+        wd = self._curword()
+        if wd[2] != '专用符号' or wd[3] != '}':
+            return False
+        self._getword()
+        return True
+    
+    def s_function_declaration(self):
+        '''
+            ＜函数定义部分＞ ::=  （＜声明头部＞｜void ＜标识符＞）＜参数＞＜复合语句＞
+        '''
+        wd = self._curword()
+        if wd[2] == '关键字' and wd[3] == 'VOID':
+            self._getword()
+            wd = self._curword()
+            if wd[2] != '标识符':
+                self._error("应为标识符")
+                return False
+            self._getword()
+            wd = self._curword()
+        elif wd[2] == '关键字' and wd[3] == 'INT':
+            res = self.s_declaration_head()
+            if not res:
+                return False
+            wd = self._curword()
+        res = self.s_param()
+        if not res:
+            return False
+        wd = self._curword()
+        res = self.s_compound_statement()
+        if not res:
+            return False
+        return True
+    
+    def s_variable_description(self):
+        '''
+            ＜变量说明部分＞ ::=  ＜声明头部＞｛，＜标识符＞｝；
+        '''
+        res = self.s_declaration_head()
+        if not res:
+            return False
+        wd = self._curword()
+        while wd[2] == '关键字' and wd[3] == ',':
+            self._getword()
+            wd = self._curword()
+            if wd[2] != '标识符':
+                self._error("应为标识符")
+                return False
+            self._getword()
+            wd = self._curword()
+        if wd[2] != '专用符号' or wd[3] != ';':
+            self._error("缺少;")
+            return False
+        self._getword()
+        return True
+    
+    def s_declaration_head(self):
+        '''
+           ＜声明头部＞ ::=  int　＜标识符＞  
+        '''
+        wd = self._curword()
+        if wd[2] != '关键字' or wd[3] != 'INT':
+            self._error("应为INT")
+            return False
+        self._getword()
+        wd = self._curword()
+        if wd[2] != '标识符':
+            self._error("应为标识符")
+            return False
+        self._getword()
+        return True
+
+    def s_const_definition(self):
+        '''
+            ＜常量定义＞  ::=  ＜标识符＞＝＜整数＞
+        ''' 
+        wd = self._curword()
+        if wd[2] != '标识符':
+            self._error("应为标识符")
+            return False
+        self._getword()
+        if wd[2] != '专用符号' or wd[3] != '=':
+            self._error('应为=')
+            return False
+        self._getword()
+        if wd[2] != '整数':
+            self._error("应为整数")
+            return False
+        self._getword()
+        return True
+    
+    def s_constant_description(self):
+        '''
+            ＜常量说明部分＞  ::=  const ＜常量定义＞｛,＜常量定义＞};
+        '''
+        wd = self._curword()
+        if wd[2] != '关键字' or wd[3] != 'CONST':
+            self._error("应为const")
+            return False
+        self._getword()
+        res = self.s_const_definition()
+        if not res:
+            return False
+        wd = self._curword()
+        while wd[2] == '专用符号' and wd[3] == ',':
+            self._getword()
+            res = self.s_const_definition()
+            if not res:
+                return False
+            wd = self._curword()
+        if wd[2] != '专用符号' or wd[3] != ';':
+            self._error("缺少;")
+            return False
+        self._getword()
+        return True
+
+    def s_program(self):
+        '''
+            ＜程序＞ ::=  〔＜常量说明部分＞〕〔＜变量说明部分＞〕｛＜函数定义部分＞｝＜主函数＞
+        ''' 
+        wd = self._curword()
+        p0 = self.words_p
+        if wd[2] == '关键字' and wd[3] == 'CONST':
+            res = self.s_constant_description()
+            if not res:
+                return False
+            p0 = self.words_p
+            wd = self._curword()
+        if wd[2] == '关键字' and wd[3] == 'INT':
+            self._getword()
+            wd = self._curword()
+            if wd[2] == '标识符':
+                res = self.s_variable_description()
+                if not res:
+                    return False
+                wd = self._curword()
+            else:
+                self.words_p = p0
+                wd = self._curword()
+        p0 = self.words_p
+        res = self.s_function_declaration()
+        while res:
+            p0 = self.words_p
+            res = self.s_function_declaration()
+            if not res:
+                self.words_p = p0
+                break
+        if not res:
+            self.words_p = p0
+        wd = self._curword()
+        res = self.s_main_function()
+        if not res:
+            return False
+        print("Grammar analysis successfully!")
+        return True
 
 
 
 if __name__ == "__main__":
     #  debugging and test_case
-    '''
-    FILE_NAME = "/home/tarpe/shared/grammar_analysis/test1.txt"
+    
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test1.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     lexer.print_result()
     lexer.output()
-    '''
-    input_file_name = "/home/tarpe/shared/test1wout.txt"
+
+    input_file_name = "/home/tarpe/shared/OnlineC0/test1wout.txt"
     compiler = norm_C0_compiler()
     compiler.read(input_file_name)
     print(compiler.words)
+    if not compiler.s_program():
+        print(compiler.error_msg_box)
+
 
 
     
