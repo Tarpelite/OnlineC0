@@ -192,7 +192,6 @@ class special_lexer(C0lexer):
         '''
             打印结果
         '''
-        i = 1
         for res in self.RESULT:
             print("行：" + str(res[0]) + " 个: " + str(res[1]) + " 类型: " + str(res[2]) + " 值: " + str(res[3]))
         print(self.error_report())
@@ -315,14 +314,12 @@ class norm_C0_compiler():
         '''
         self._getword()
         wd = self._curword()
-        flag = 0
         if wd[2] != '专用符号' or wd[3] != '(':
             self._error('应为(')
             return False
         self._getword()
         wd = self._curword()
         if wd[2] == '字符串':
-            flag = 1
             self._getword()
             wd = self._curword()
             if wd[2] == '专用符号' and wd[3] == ',':
@@ -330,7 +327,6 @@ class norm_C0_compiler():
                 wd = self._curword()
         if wd[2] == '+' or wd[2] == '-' or wd[2] == '标识符':
             res = self.s_expression()
-            flag = 1
             if not res:
                 return False
         wd = self._curword()
@@ -386,13 +382,12 @@ class norm_C0_compiler():
         '''
         wd0 = self._curword()
         p0 = self.words_p
-        flag = 0
         res = self.s_expression()
         if not res:
             wd = wd0
             self.words_p = p0
         else:
-            flag = 1
+            pass
         wd = self._curword()
         while wd[2] == '专用符号' and wd[3] == ',':
             self._getword()
@@ -961,30 +956,3 @@ if __name__ == "__main__":
         for msg in compiler.error_msg_box:
             print(msg)
 
-
-
-    
-
-    
-
-
-
-
-
-
-
-                
-
-
-
-                
-
-
-
-
-
-
-
-
-        
-        
