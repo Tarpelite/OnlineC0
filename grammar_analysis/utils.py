@@ -947,13 +947,13 @@ class norm_C0_compiler():
 if __name__ == "__main__":
     #  debugging and test_case
     
-    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test3.txt"
+    FILE_NAME = "C:\\编译课程设计\\OnlineC0\\grammar_analysis\\test4.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     lexer.print_result()
     lexer.output()
 
-    input_file_name = "/home/tarpe/shared/OnlineC0/test3wout.txt"
+    input_file_name = "C:\\编译课程设计\\OnlineC0\\test4wout.txt"
     compiler = norm_C0_compiler()
     compiler.read(input_file_name)
     print(compiler.words)
