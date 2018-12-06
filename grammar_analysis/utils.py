@@ -215,7 +215,7 @@ class special_lexer(C0lexer):
             with open(OUTPUT_ERROR_MESSAGE, "w+") as f:
                 f.write(str(len(self.error_message_box))+"\n")
                 for msg in self.error_message_box:
-                    f.write(msg+ "\n")
+                    f.write(msg + "\n")
             f.close()
 
 
@@ -237,8 +237,10 @@ class norm_C0_compiler():
         #           lastpar:指向函数最后一个参数在tab表中的位置
         #           )
         self.display = []
+        self.display_p = 0
         #   display分程序表(用于存放和检索btab)
         self.rconst = []
+        self.rconst_p = 0
         #   rconst实常量表（val：当前实常量的值）
         self.stab = []
         #   stab字符串常量表(inum:字符串起始位置，slen:字符串长度)
@@ -248,6 +250,8 @@ class norm_C0_compiler():
         #   存放报错信息
         self.stack_p = 0
         #   运行时栈的指针
+        self.cur_lev = 1
+        #   当前运行时的lev
         
     def _getword(self):
         '''
@@ -266,6 +270,94 @@ class norm_C0_compiler():
         if self.words_p < len(self.words) and self.words_p >= 0:
             return self.words[self.words_p]
         return False
+    
+    def _insert_const(self, word: list, value):
+        '''
+            在rconst中插入常数
+        '''
+        name = word[2]
+        record = [name, value]
+        self.rconst.append(record)
+        self.rconst_p += 1
+        return True
+    
+    def _lookup_const(self, word_name: str):
+        '''
+            查询rconst表，获取常量对应的值
+        '''
+        for word in self.rconst:
+            if word_name == word[0]:
+                return word[1]
+        self._error("常量" + word_name + "未定义")
+        return False
+    
+    def _insert_display(self, name, typ, value=None, lev):
+        '''
+            在display区中插入一条记录
+        '''
+        addr = self.display_p * 4
+        self.display_p += 1
+        record = [name, typ, value, addr, lev]
+        self.display.append(record)
+        return True
+    
+    def _new_lev(self, pre_lev: int):
+        '''
+            在display区中插入一个新的lev
+        '''
+        self.cur_lev += 1
+        value = self.display_p
+        ret_addr_name = "ret_addr"
+        ret_value = "ret_value"
+        if pre_lev == 0 or self.cur_lev == 1:
+            return True
+        else:
+            i = pre_lev
+            cur_lev_record = self.display[i]
+            while cur_lev_reord[1] == 'abp':
+                cur_lev_record[4] = self.cur_lev 
+                self.display.append(cur_lev_record)
+                self.display_p += 1
+                i += 1
+            self._insert_display(ret_addr_name, None)
+            self._insert_display(pre_lev, 'abp', value=pre_lev, self.cur_lev)
+    
+    def _lookup_varaible(self, name: str):
+        '''
+            在display区查找一个变量
+        '''
+        cur_lev = self.cur_lev
+        i = self.display_p
+        i -= 1
+        record = self.display[i]
+        while record[4] == cur_lev:
+            if name == record[0]:
+                return record
+            elif record[1] == 'abp':
+                res = self._lookup_abp(record[0], name)
+                if res:
+                    return res
+            else:
+                i -= 1
+                record = self.display[i]
+        self._error(name + "未定义")
+        return False
+    
+    def _lookup_abp(self, int, name):
+        '''
+            在某一个abp内非递归的查找一个变量
+        '''
+
+             
+
+
+
+
+
+    
+    def _insert_variable(self, word: list, value: int):
+
+
         
     def read(self, file_name: str):
         self.input_file_name = file_name
