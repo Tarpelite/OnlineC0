@@ -252,6 +252,8 @@ class norm_C0_compiler():
         #   运行时栈的指针
         self.cur_lev = 1
         #   当前运行时的lev
+        self.lev_cnt = 0
+        #   目前的lev总数
         
     def _getword(self):
         '''
@@ -291,7 +293,7 @@ class norm_C0_compiler():
         self._error("常量" + word_name + "未定义")
         return False
     
-    def _insert_display(self, name, typ, value=None, lev):
+    def _insert_display(self, name, typ, value, lev):
         '''
             在display区中插入一条记录
         '''
@@ -305,22 +307,21 @@ class norm_C0_compiler():
         '''
             在display区中插入一个新的lev
         '''
-        self.cur_lev += 1
-        value = self.display_p
+        self.lev_cnt += 1
+        self.cur_lev = self.lev_cnt
         ret_addr_name = "ret_addr"
-        ret_value = "ret_value"
         if pre_lev == 0 or self.cur_lev == 1:
             return True
         else:
             i = pre_lev
             cur_lev_record = self.display[i]
-            while cur_lev_reord[1] == 'abp':
+            while cur_lev_record[1] == 'abp':
                 cur_lev_record[4] = self.cur_lev 
                 self.display.append(cur_lev_record)
                 self.display_p += 1
                 i += 1
             self._insert_display(ret_addr_name, None)
-            self._insert_display(pre_lev, 'abp', value=pre_lev, self.cur_lev)
+            self._insert_display(pre_lev, 'abp', pre_lev, self.cur_lev)
     
     def _lookup_varaible(self, name: str):
         '''
@@ -341,23 +342,17 @@ class norm_C0_compiler():
                 i -= 1
                 record = self.display[i]
         self._error(name + "未定义")
-        return False
-    
-    def _lookup_abp(self, int, name):
+        return False 
+   
+    def _lookup_abp(self, lev, name):
         '''
             在某一个abp内非递归的查找一个变量
         '''
-
-             
-
-
-
-
-
-    
-    def _insert_variable(self, word: list, value: int):
-
-
+        for record in self.display:
+            if record[1] != 'abp' and record[4] == 'lev':
+                if record[0] == name:
+                    return record
+        return False
         
     def read(self, file_name: str):
         self.input_file_name = file_name
@@ -376,7 +371,6 @@ class norm_C0_compiler():
         msg = "line: " + wd[0] + " word: " + wd[1] + hint 
         self.error_msg_box.append(msg)
     
-
     def s_read(self):
         '''
             <读语句> -> scanf'('<标识符>')'
