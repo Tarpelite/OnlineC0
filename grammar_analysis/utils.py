@@ -237,8 +237,10 @@ class norm_C0_compiler():
         #           lastpar:指向函数最后一个参数在tab表中的位置
         #           )
         self.display = []
+        self.display_p = 0
         #   display分程序表(用于存放和检索btab)
         self.rconst = []
+        self.rconst_p = 0
         #   rconst实常量表（val：当前实常量的值）
         self.stab = []
         #   stab字符串常量表(inum:字符串起始位置，slen:字符串长度)
@@ -248,6 +250,8 @@ class norm_C0_compiler():
         #   存放报错信息
         self.stack_p = 0
         #   运行时栈的指针
+        self.cur_lev = 1
+        #   当前运行时的lev
         
     def _getword(self):
         '''
@@ -266,6 +270,57 @@ class norm_C0_compiler():
         if self.words_p < len(self.words) and self.words_p >= 0:
             return self.words[self.words_p]
         return False
+    
+    def _insert_const(self, word: list, value):
+        '''
+            在rconst中插入常数
+        '''
+        name = word[2]
+        record = [name, value]
+        self.rconst.append(record)
+        self.rconst_p += 1
+        return True
+    
+    def _lookup_const(self, word_name: str):
+        '''
+            查询rconst表，获取常量对应的值
+        '''
+        for word in self.rconst:
+            if word_name == word[0]:
+                return word[1]
+        self._error("常量" + word_name + "未定义")
+        return False
+    
+    def _insert_display(self, word: list, type, value=None):
+        '''
+            在display区中插入一条记录
+        '''
+        name = word[2]
+        addr = self.display_p * 4
+        self.display_p += 1
+        record = [name, value, addr]
+        self.display.append(record)
+        return True
+    
+    def _new_lev(self, pre_lev):
+        '''
+            在display区中插入一个新的lev
+        '''
+        ret_name = "ret_addr"
+        if pre_lev == 0 or cur_lev == 1:
+            return True
+        else:
+            for record in self.display:
+                if record[0] == 
+
+
+
+
+
+    
+    def _insert_variable(self, word: list, value: int):
+
+
         
     def read(self, file_name: str):
         self.input_file_name = file_name
