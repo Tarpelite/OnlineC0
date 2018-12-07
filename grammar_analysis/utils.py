@@ -208,6 +208,8 @@ class special_lexer(C0lexer):
         with open(OUTPUT_FILE_NAME, "w+") as f:
             f.write(str(length)+"\n")
             for res in self.RESULT:
+                line = str(res[0]) + " " + str(res[1]) + " " + str(res[2]) + " " + str(res[3])+"\n"
+                line = line.encode("utf-8")
                 f.write(str(res[0]) + " " + str(res[1]) + " " + str(res[2]) + " " + str(res[3])+"\n")
         f.close()
         #   如果有报错
@@ -282,7 +284,7 @@ class norm_C0_compiler():
             在rconst中插入常数
         '''
         res = self._lookup_const(name)
-        if res:
+        if res != "error":
             self._error("常量" + name + "重复定义")
             return False
         record = [name, value]
@@ -299,16 +301,19 @@ class norm_C0_compiler():
             if word_name == word[0]:
                 return i
             i += 1
-        self._error("常量" + word_name + "未定义")
-        return False
+        return "error"
     
     def _insert_display(self, name, typ, value, address, lev):
         '''
             在display区中插入一条记录
         '''
         res = self._lookup_varaible(name)
-        if res:
-            self._error(name + "重复定义")
+        if res != 'error':
+            self._error(str(name) + "重复定义")
+            return False
+        res = self._lookup_const(name)
+        if res != 'error':
+            self._error(str(name) + "重复定义")
             return False
         if  address is None:
             addr = self.display_p 
@@ -327,18 +332,8 @@ class norm_C0_compiler():
         self.pre_lev = self.cur_lev
         self.cur_lev = self.lev_cnt
         ret_addr_name = "ret_addr"
-        if pre_lev == 0 or self.cur_lev == 1:
-            return True
-        else:
-            i = pre_lev
-            cur_lev_record = self.display[i]
-            while cur_lev_record[1] == 'abp':
-                cur_lev_record[4] = self.cur_lev 
-                self.display.append(cur_lev_record)
-                self.display_p += 1
-                i += 1
-            self._insert_display(ret_addr_name, 'ret_addr', None, None, lev)
-            self._insert_display(pre_lev, 'abp', pre_lev, None, self.cur_lev)
+        self._insert_display(ret_addr_name, 'ret_addr', None, None, self.cur_lev)
+        self._insert_display(self.pre_lev, 'abp', self.pre_lev, None, self.cur_lev)
     
     def _lookup_varaible(self, name: str):
         '''
@@ -351,11 +346,13 @@ class norm_C0_compiler():
                 return i
             elif record[4] == cur_lev and record[1] == 'abp':
                 res = self._lookup_abp(record[0], name)
+                if res == 0:
+                    return res
                 if res:
                     return res
             else:
                 i += 1
-        return False
+        return "error"
    
     def _lookup_abp(self, lev, name):
         '''
@@ -363,7 +360,7 @@ class norm_C0_compiler():
         '''
         i = 0
         for record in self.display:
-            if record[1] != 'abp' and record[4] == 'lev':
+            if record[1] != 'abp' and record[4] == lev:
                 if record[0] == name:
                     return i
             else:
@@ -375,7 +372,9 @@ class norm_C0_compiler():
             生成一行Pcode
         '''
         line_no = len(self.code)
-        code = [line_no].extend(code)
+        res = [line_no]
+        res.extend(code)
+        code = res
         self.code.append(code)
     
     def _zipper_fill(self, JPC_id, JPC_code):
@@ -383,12 +382,18 @@ class norm_C0_compiler():
             拉链回填
         '''
         code_pre = self.code[:JPC_id]
-        if JPC_id + 1 >= len(self.code):
+        res = [JPC_id]
+        JPC_code[-1] = JPC_code[-1] + 1
+        res.extend(JPC_code)
+        JPC_code = res
+        if JPC_id >= len(self.code):
             return False
-        code_suf = self.code[JPC_id+1:]
+        code_suf = self.code[JPC_id:]
         for i in range(len(code_suf)):
             code_suf[i][0] = code_suf[i][0] + 1
-        self.code = code_pre.append(JPC_code).extend(code_suf)
+        code_pre.append(JPC_code)
+        code_pre.extend(code_suf)
+        self.code = code_pre
         return True
     
     def print_Pcode(self):
@@ -479,6 +484,9 @@ class norm_C0_compiler():
         wd = self._getword()
         name = wd[3]
         i = self._lookup_variable(name)
+        if i == "error":
+            self._error(name + "未定义")
+            return False
         record = self.display[i]
         addr = record[3]
         lev = record[4]
@@ -693,7 +701,8 @@ class norm_C0_compiler():
         wd = self._getword()
         name = wd[3]
         i = self._lookup_varaible(name)
-        if not i:
+        if i == "error":
+            self._error(name + "未定义")
             return False
         record = self.display[i]
         typ = record[1]
@@ -752,7 +761,7 @@ class norm_C0_compiler():
         if not res:
             return False
         self._gen_Pcode(jmp_back_code)
-        target = line(self.code)
+        target = len(self.code)
         JPC_code = ["JPC", 11, "", target]
         if not self._zipper_fill(JPC_id, JPC_code):
             return False
@@ -853,10 +862,11 @@ class norm_C0_compiler():
             return False
         wd = self._getword()
         name = wd[3]
-        record = self.display[i]
         i = self._lookup_varaible(name)
-        if not i:
+        if i == "error":
+            self._error("未定义")
             return False
+        record = self.display[i]
         typ = record[1]
         if typ != 'int':
             self._error(name + "应是int类型，但却是" + typ)
@@ -864,7 +874,7 @@ class norm_C0_compiler():
         addr = record[3]
         lev = record[4]
         code = ["LDA", 0, lev, addr]
-        self.code.extend(code)
+        self._gen_Pcode(code)
         wd = self._curword()
         if wd[2] != '专用符号' or wd[3] != '=':
             self._error("应为=")
@@ -872,7 +882,7 @@ class norm_C0_compiler():
         self._getword()
         res = self.s_expression()
         code = ["STO", 38, "", ""]
-        self.code.extedn(code)
+        self._gen_Pcode(code)
         if not res:
             return False
         return True
@@ -982,7 +992,7 @@ class norm_C0_compiler():
         elif wd[2] == '整数':
             value = wd[3]
             code = ["LDC", 24, "", value]
-            self._gen_Pcode(value)
+            self._gen_Pcode(code)
             self._getword()
             return True
         elif wd[2] == '标识符':
@@ -997,6 +1007,9 @@ class norm_C0_compiler():
                 wd = self._curword()
                 name = wd[3]
                 i = self._lookup_variable(name)
+                if i == "error":
+                    self._error("未定义")
+                    return False
                 record = self.display[i]
                 lev = record[4]
                 x = lev
@@ -1012,13 +1025,19 @@ class norm_C0_compiler():
             else:
                 wd = self.words[p0]
                 name = wd[3]
-                i = self._lookup_varaible(name)
-                if not i:
-                    return False
-                record = self.display[i]
-                addr = record[3]
-                lev = record[4]
-                code = ["LOD", 1, lev, addr]
+                i = self._lookup_const(name)
+                if i != "error":
+                    value = self.rconst[i][1]
+                    code = ["LDC", 24, "", value]
+                else:
+                    i = self._lookup_varaible(name)
+                    if i == "error":
+                        self._error(name + "未定义")
+                        return False
+                    record = self.display[i]
+                    addr = record[3]
+                    lev = record[4]
+                    code = ["LOD", 1, lev, addr]
                 self._gen_Pcode(code)
                 return True
         else:
@@ -1055,7 +1074,7 @@ class norm_C0_compiler():
         if wd[2] == '+' or wd[2] == '-':
             if wd[2] == '+':
                 operator_global = "ADD"
-            else:
+            elif wd[2] == "-":
                 operator_global = "SUB"
             code = ["LDC", 24, "", 0]
             self._gen_Pcode(code)
@@ -1078,9 +1097,10 @@ class norm_C0_compiler():
             wd = self._curword()
         if operator_global == "ADD":
             code = ["ADD", 52, "", ""]
-        else:
+            self._gen_Pcode(code)
+        elif operator_global == 'SUB':
             code = ["SUB", 53, "", ""]
-        self._gen_Pcode(code)
+            self._gen_Pcode(code)
         return True
     
     def s_main_function(self):
@@ -1148,6 +1168,8 @@ class norm_C0_compiler():
                 name = wd[3]
                 self._insert_display(name, 'int', None, None, self.cur_lev)
                 wd = self._curword()
+        if cnt == 0:
+            return True
         return cnt
     
     def s_param(self):
@@ -1160,7 +1182,7 @@ class norm_C0_compiler():
             return False
         self._getword()
         res = self.s_param_list()
-        if not res:
+        if res == False:
             return False
         wd = self._curword()
         if wd[2] != '专用符号' or wd[3] != ')':
@@ -1212,23 +1234,24 @@ class norm_C0_compiler():
             name = wd[3]
             self._getword()
             wd = self._curword()
+            self._insert_display(name, 'func', None, None, self.cur_lev)
         elif wd[2] == '关键字' and wd[3] == 'INT':
             self._getword()
             wd = self._curword()
-            if wd[2] != '标识符':
+            if wd[2] != '标识符' and ( wd[2]!= '关键字' or wd[3] != 'MAIN'):
                 self._error("应为标识符")
                 return False
-            self._getword()
+            if wd[2] == '关键字' and wd[3] == 'MAIN':
+                return False
+            wd = self._getword()
+            name = wd[3]
             wd = self._curword()
-        self._insert_display(name, 'func', None, None, self.cur_lev)
         self.pre_lev = self.cur_lev
         self._new_lev(self.cur_lev)
         res = self.s_param()
         if not res:
             return False
         i = self._lookup_varaible(name)
-        if not i:
-            return False
         self.display[i][2] = res
         wd = self._curword()
         res = self.s_compound_statement()
@@ -1302,7 +1325,7 @@ class norm_C0_compiler():
             self._error("应为整数")
             return False
         value = wd[3]
-        if not self._insert_const(name, value):
+        if self._insert_const(name, value) == 'error':
             return False
         self._getword()
         return True
@@ -1382,13 +1405,13 @@ class norm_C0_compiler():
 if __name__ == "__main__":
     #  debugging and test_case
     
-    FILE_NAME = "C:\\编译课程设计\\OnlineC0\\grammar_analysis\\test4.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test4.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     lexer.print_result()
     lexer.output()
 
-    input_file_name = "C:\\编译课程设计\\OnlineC0\\test4wout.txt"
+    input_file_name = "/home/tarpe/shared/OnlineC0/test4wout.txt"
     compiler = norm_C0_compiler()
     compiler.read(input_file_name)
     print(compiler.words)
@@ -1396,4 +1419,3 @@ if __name__ == "__main__":
         for msg in compiler.error_msg_box:
             print(msg)
     compiler.report_result()
-
