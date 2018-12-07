@@ -315,7 +315,7 @@ class norm_C0_compiler():
         if res != 'error':
             self._error(str(name) + "重复定义")
             return False
-        if  address is None:
+        if address is None:
             addr = self.display_p 
         else:
             addr = address
@@ -346,9 +346,7 @@ class norm_C0_compiler():
                 return i
             elif record[4] == cur_lev and record[1] == 'abp':
                 res = self._lookup_abp(record[0], name)
-                if res == 0:
-                    return res
-                if res:
+                if res != "error":
                     return res
             else:
                 i += 1
@@ -365,7 +363,7 @@ class norm_C0_compiler():
                     return i
             else:
                 i += 1
-        return False
+        return "error"
     
     def _gen_Pcode(self, code: list):
         '''
@@ -578,13 +576,8 @@ class norm_C0_compiler():
             code = ["EXP", 32, "", ""]
             self._gen_Pcode(code)
         #   切换display到上一层
-        x = self.pre_lev
-        y = 0
-        for word in self.display:
-            lev = word[4]
-            addr = word[3]
-            if lev == x and addr > y:
-                y = addr
+        x = self.cur_lev
+        y = self.pre_lev
         code = ["DIS", 3, x, y]
         self._gen_Pcode(code)
         i = -1
@@ -1112,7 +1105,7 @@ class norm_C0_compiler():
             self._error("应为void或int")
             return False
         else:
-            if wd[3] != 'VOID' and wd[3] != 'INT' :
+            if wd[3] != 'VOID' and wd[3] != 'INT':
                 self._error("应为void或int")
                 return False
         self._getword()
@@ -1238,14 +1231,15 @@ class norm_C0_compiler():
         elif wd[2] == '关键字' and wd[3] == 'INT':
             self._getword()
             wd = self._curword()
-            if wd[2] != '标识符' and ( wd[2]!= '关键字' or wd[3] != 'MAIN'):
-                self._error("应为标识符")
-                return False
             if wd[2] == '关键字' and wd[3] == 'MAIN':
+                return False
+            if wd[2] != '标识符':
+                self._error("应为标识符")
                 return False
             wd = self._getword()
             name = wd[3]
             wd = self._curword()
+            self._insert_display(name, 'func', None, None, self.cur_lev)
         self.pre_lev = self.cur_lev
         self._new_lev(self.cur_lev)
         res = self.s_param()
@@ -1368,30 +1362,34 @@ class norm_C0_compiler():
                 wd = self._curword()
             wd = self._curword()
             p0 = self.words_p
+        flag = 0
         if wd[2] == '关键字' and wd[3] == 'INT':
             self._getword()
             wd = self._curword()
             if wd[2] == '标识符':
-                self.words_p = p0
-                res = self.s_variable_description()
-                if not res:
+                p1 = self.words_p
+                self._getword()
+                wd = self._curword()
+                if wd[2] == "专用符号" and wd[3] == "(":
                     self.words_p = p0
                     wd = self._curword()
+                    res = self.s_function_declaration()
+                    if res:
+                        flag = 1
                 else:
+                    self.words_p = p1
                     wd = self._curword()
-                    p0 = self.words_p
-            else:
-                self.words_p = p0
-                wd = self._curword()
-        p0 = self.words_p
-        res = self.s_function_declaration()
-        while res:
+                    res = self.s_variable_description()
+                    if not res:
+                        return False
+        while flag == 1:
             p0 = self.words_p
             res = self.s_function_declaration()
             if not res:
                 self.words_p = p0
+                flag = 0
                 break
-        if not res:
+        if flag == 0:
             self.words_p = p0
         wd = self._curword()
         res = self.s_main_function()
@@ -1405,13 +1403,13 @@ class norm_C0_compiler():
 if __name__ == "__main__":
     #  debugging and test_case
     
-    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test4.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test2.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     lexer.print_result()
     lexer.output()
 
-    input_file_name = "/home/tarpe/shared/OnlineC0/test4wout.txt"
+    input_file_name = "/home/tarpe/shared/OnlineC0/test2wout.txt"
     compiler = norm_C0_compiler()
     compiler.read(input_file_name)
     print(compiler.words)

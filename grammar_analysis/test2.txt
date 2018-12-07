@@ -1,8 +1,8 @@
 const a = 1, b = 2;
 
-int add(int a, int b)
+int add(int i, int j)
 {
-    return (a+b);
+    return (i+j);
 }
 
 int main()
