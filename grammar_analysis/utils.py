@@ -374,10 +374,9 @@ class norm_C0_compiler():
         '''
             生成一行Pcode
         '''
-        if self.is_main:
-            self.code.extend(code)
-        else:
-            pass
+        line_no = len(self.code)
+        code = [line_no].extend(code)
+        self.code.append(code)
         
     def read(self, file_name: str):
         self.input_file_name = file_name
@@ -447,39 +446,83 @@ class norm_C0_compiler():
         self._getword()
         return True
     
-    def s_return(self, display_index: int):
+    def s_return(self):
         '''
             ＜返回语句＞ ::=  return [ ‘(’＜表达式＞’)’ ] 
         '''
-        record = self.display[display_index]
+        #   find return address
+        record = []
+        for word in self.display:
+            if word[0] == 'ret_addr' and word[4] == self.cur_lev:
+                record = word
+                break
+        if len(record) == 0:
+            return False
         addr = record[3] + 1
         lev = record[4]
         self._getword()
         wd = self._curword()
         if wd[2] == '专用符号' and wd[3] == '(':
             code = ['LDA', 0, lev, addr]
-            self.code.extend(code)
+            self._gen_Pcode(code)
             self._getword()
             wd = self._curword()
             if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符' and wd[2] != '整数':
                 self._error('应为表达式')
                 return False
             else:
+                #   有返回值，调用的时函数，将返回值写入对应地址，并且输出EXF
                 res = self.s_expression()
                 if not res:
                     return False
                 code = ["STO", 38, "", ""]
-                self.code.extend(code)
+                self._gen_Pcode(code)
                 code = ["EXF", 33, "", ""]
-                self.code.extend(code)
+                self._gen_Pcode(code)
             wd = self._curword()
             if wd[2] != '专用符号' or wd[3] != ')':
                 self._error('应为)')
                 return False
             self._getword()
         else:
+            #   如果没有返回值，则是调用的一个过程，因而输出EXP指令
             code = ["EXP", 32, "", ""]
-            self.code.extend(code)
+            self._gen_Pcode(code)
+        #   切换display到上一层
+        x = self.pre_lev
+        y = 0
+        for word in self.display:
+            lev = word[4]
+            addr = word[3]
+            if lev == x and addr > y:
+                y = addr
+        code = ["DIS", 3, x, y]
+        self._gen_Pcode(code)
+        i = -1
+        for word in self.display:
+            lev = word[4]
+            name = word[0]
+            if lev == self.cur_lev and name == 'ret_addr':
+                i = word[3] + 1
+        if i == -1:
+            return False
+        pre_lev = self.display[i][0]
+        self.cur_lev = pre_lev
+        i = -1
+        #   最外层特殊处理
+        if self.cur_lev == 1:
+            self.pre_lev = 0
+        #   其他情况查询display区中的pre_lev然后回填
+        else:
+            for word in self.display:
+                lev = word[4]
+                name = word[0]
+                if lev == self.cur_lev and name == 'ret_addr':
+                    i = word[3] + 1
+            if i == -1:
+                return False
+            pre_lev = self.display[i][0]
+            self.pre_lev = pre_lev
         return True
     
     def s_statement_series(self):
@@ -516,7 +559,7 @@ class norm_C0_compiler():
                 i += 1
             base_addr += i
         code = ["LDA", 0, lev, base_addr]
-        self.code.extend(code)
+        self._gen_Pcode(code)
         wd0 = self._curword()
         p0 = self.words_p
         cnt = 0
@@ -526,12 +569,12 @@ class norm_C0_compiler():
             self.words_p = p0
         else:
             code = ["STO", 38, "", ""]
-            self.code.extend(code)
+            self._gen_Pcode(code)
             cnt += 1
             base_addr += 1
             if cnt < val:
                 code = ["LDA", 0, lev, base_addr]
-                self.code.extend(code)
+                self._gen_Pcode(code)
             elif cnt > val:
                 self._error("参数个数不符")
                 return False
@@ -549,12 +592,12 @@ class norm_C0_compiler():
                 if not res:
                     return False
                 code = ["STO", 38, "", ""]
-                self.code.extend(code)
+                self._gen_Pcode(code)
                 cnt += 1
                 base_addr += 1
                 if cnt < val:
                     code = ["LDA", 0, lev, base_addr]
-                    self.code.extend(code)
+                    self._gen_Pcode(code)
                 elif cnt > val:
                     self._error("参数个数不符")
                     return False
@@ -565,6 +608,7 @@ class norm_C0_compiler():
         '''
            ＜函数调用语句＞ ::=  ＜标识符＞‘（’＜值参数表＞‘）’ 
         '''
+        #   在符号表找到对应的函数
         wd = self._getword()
         name = wd[3]
         i = self._lookup_varaible(name)
@@ -575,6 +619,10 @@ class norm_C0_compiler():
         if typ != 'func':
             self._error(name + "不是可调用的类型")
             return False
+        #   调用之前先压栈
+        code = ["MKS", 18, "", self.cur_lev]
+        self._gen_Pcode(code)
+        #   先准备参数
         wd = self._curword()
         if wd[2] != '专用符号' or wd[3] != '(':
             self._error("应为(")
@@ -587,6 +635,10 @@ class norm_C0_compiler():
         if wd[2] != '专用符号' or wd[3] != ')':
             self._error("应为)")
             return False
+        #   然后调用函数
+        addr = record[3]
+        code = ["CAL", 19, "", addr]
+        self._gen_Pcode(code)
         self._getword()
         return True
     
@@ -630,15 +682,34 @@ class norm_C0_compiler():
             return False
         wd = self._curword()
         if wd[2] != '关系运算符':
+            #   如果只有一个表达式，判断表达式结果是否为0
+            code = ["LDC", 24, "", 0]
+            self._gen_Pcode(code)
+            code = ["EQL", 45, "", ""]
+            self._gen_Pcode(code)
             return True
         else:
-            self._getword()
+            wd = self._getword()
+            operator = wd[3]
+            if operator == "==":
+                code = ["EQL", 45, "", ""]
+            elif operator == "!=":
+                code = ["NEQ", 46, "", ""]
+            elif operator == "<":
+                code = ["LSS", 47, "", ""]
+            elif operator == "<=":
+                code = ["LER", 48, "", ""]
+            elif operator == ">":
+                code = ["GRT", 49, "", ""]
+            elif operator == ">=":
+                code = ["GEQ", 50, "", ""]
             wd = self._curword()
             if wd[2] != '+' and wd[2] != '-' and wd[2] != '标识符' and wd[2] != '整数':
                 return False
             res = self.s_expression()
             if not res:
                 return False
+            self._gen_Pcode(code)
             return True
     
     def s_condition_statement(self):
@@ -680,24 +751,26 @@ class norm_C0_compiler():
             return False
         wd = self._getword()
         name = wd[3]
-        wd = self._curword()
-        if wd[2] != '专用符号' or wd[3] != '=':
-            self._error("应为=")
-            return False
-        self._getword()
-        res = self.s_expression()
+        record = self.display[i]
         i = self._lookup_varaible(name)
         if not i:
             return False
-        record = self.display[i]
         typ = record[1]
         if typ != 'int':
             self._error(name + "应是int类型，但却是" + typ)
             return False
         addr = record[3]
         lev = record[4]
-        code = ["LOD", 1, lev, addr]
-        self.code.append(code)
+        code = ["LDA", 0, lev, addr]
+        self.code.extend(code)
+        wd = self._curword()
+        if wd[2] != '专用符号' or wd[3] != '=':
+            self._error("应为=")
+            return False
+        self._getword()
+        res = self.s_expression()
+        code = ["STO", 38, "", ""]
+        self.code.extedn(code)
         if not res:
             return False
         return True
@@ -807,7 +880,7 @@ class norm_C0_compiler():
         elif wd[2] == '整数':
             value = wd[3]
             code = ["LDC", 24, "", value]
-            self.code.extend(value)
+            self._gen_Pcode(value)
             self._getword()
             return True
         elif wd[2] == '标识符':
@@ -819,6 +892,20 @@ class norm_C0_compiler():
                 res = self.s_function_call_statement()
                 if not res:
                     return False
+                wd = self._curword()
+                name = wd[3]
+                i = self._lookup_variable(name)
+                record = self.display[i]
+                lev = record[4]
+                x = lev
+                y = -1
+                for word in self.display:
+                    if word[4] == lev and word[0] == 'ret_address':
+                        y = word[3]
+                if y == -1 :
+                    return False
+                code = ["LOD", 1, x, y]
+                self.code.extend(code)
                 return True
             else:
                 wd = self.words[p0]
@@ -830,7 +917,7 @@ class norm_C0_compiler():
                 addr = record[3]
                 lev = record[4]
                 code = ["LOD", 1, lev, addr]
-                self.code.extend(code)
+                self._gen_Pcode(code)
                 return True
         else:
             self._error("应为标识符或（或整数")
@@ -853,7 +940,7 @@ class norm_C0_compiler():
                 code = ["MUL", 57, "", ""]
             else:
                 code = ["DIV", 58, "", ""]
-            self.code.extend(code)
+            self._gen_Pcode(code)
             wd = self._curword()
         return True
     
@@ -869,7 +956,7 @@ class norm_C0_compiler():
             else:
                 operator_global = "SUB"
             code = ["LDC", 24, "", 0]
-            self.code.extend(code)
+            self._gen_Pcode(code)
             self._getword()
             wd = self._curword()
         res = self.s_item()
@@ -885,13 +972,13 @@ class norm_C0_compiler():
                 code = ["ADD", 52, "", ""]
             else:
                 code = ["SUB", 53, "", ""]
-            self.code.extend(code)
+            self._gen_Pcode(code)
             wd = self._curword()
         if operator_global == "ADD":
             code = ["ADD", 52, "", ""]
         else:
             code = ["SUB", 53, "", ""]
-        self.code.extend(code)
+        self._gen_Pcode(code)
         return True
     
     def s_main_function(self):
