@@ -252,7 +252,7 @@ class norm_C0_compiler():
         #   运行时栈的指针
         self.cur_lev = 1
         #   当前运行时的lev
-        self.lev_cnt = 0
+        self.lev_cnt = 1
         #   目前的lev总数
         self.pre_lev = 0
         #   记录上一层的计数
@@ -310,7 +310,7 @@ class norm_C0_compiler():
         if res:
             self._error(name + "重复定义")
             return False
-        if not address:
+        if  address is None:
             addr = self.display_p 
         else:
             addr = address
@@ -324,6 +324,7 @@ class norm_C0_compiler():
             在display区中插入一个新的lev
         '''
         self.lev_cnt += 1
+        self.pre_lev = self.cur_lev
         self.cur_lev = self.lev_cnt
         ret_addr_name = "ret_addr"
         if pre_lev == 0 or self.cur_lev == 1:
@@ -344,30 +345,29 @@ class norm_C0_compiler():
             在display区查找一个变量
         '''
         cur_lev = self.cur_lev
-        i = self.display_p
-        i -= 1
-        record = self.display[i]
-        while record[4] == cur_lev:
-            if name == record[0]:
-                return record
-            elif record[1] == 'abp':
+        i = 0
+        for record in self.display:
+            if record[0] == name and record[4] == cur_lev:
+                return i
+            elif record[4] == cur_lev and record[1] == 'abp':
                 res = self._lookup_abp(record[0], name)
                 if res:
                     return res
             else:
-                i -= 1
-                record = self.display[i]
-        self._error(name + "未定义")
-        return False 
+                i += 1
+        return False
    
     def _lookup_abp(self, lev, name):
         '''
             在某一个abp内非递归的查找一个变量
         '''
+        i = 0
         for record in self.display:
             if record[1] != 'abp' and record[4] == 'lev':
                 if record[0] == name:
-                    return record
+                    return i
+            else:
+                i += 1
         return False
     
     def _gen_Pcode(self, code: list):
@@ -754,7 +754,8 @@ class norm_C0_compiler():
         self._gen_Pcode(jmp_back_code)
         target = line(self.code)
         JPC_code = ["JPC", 11, "", target]
-        if not self._zipper_fill(JPC_id, JPC_code)
+        if not self._zipper_fill(JPC_id, JPC_code):
+            return False
         return True
     
     def s_condition(self):
@@ -1275,6 +1276,9 @@ class norm_C0_compiler():
         if wd[2] != '标识符':
             self._error("应为标识符")
             return False
+        name = wd[3]
+        if not self._insert_display(name,'int', None, None, self.cur_lev):
+            return False
         self._getword()
         return True
 
@@ -1286,7 +1290,7 @@ class norm_C0_compiler():
         if wd[2] != '标识符':
             self._error("应为标识符")
             return False
-        name = wd[2]
+        name = wd[3]
         self._getword()
         wd = self._curword()
         if wd[2] != '专用符号' or wd[3] != '=':
@@ -1391,4 +1395,5 @@ if __name__ == "__main__":
     if not compiler.s_program():
         for msg in compiler.error_msg_box:
             print(msg)
+    compiler.report_result()
 
