@@ -377,6 +377,73 @@ class norm_C0_compiler():
         line_no = len(self.code)
         code = [line_no].extend(code)
         self.code.append(code)
+    
+    def _zipper_fill(self, JPC_id, JPC_code):
+        '''
+            拉链回填
+        '''
+        code_pre = self.code[:JPC_id]
+        if JPC_id + 1 >= len(self.code):
+            return False
+        code_suf = self.code[JPC_id+1:]
+        for i in range(len(code_suf)):
+            code_suf[i][0] = code_suf[i][0] + 1
+        self.code = code_pre.append(JPC_code).extend(code_suf)
+        return True
+    
+    def print_Pcode(self):
+        '''
+            将Pcode打印成表
+        '''
+        print("Pcode")
+        for code in self.code:
+            record = ""
+            for ele in code:
+                record += str(ele)+"\t"
+            record += "\n"
+            print(record)
+    
+    def print_display(self):
+        '''
+            打印变量表
+        '''
+        print("变量表")
+        for record in self.display:
+            line = ""
+            for ele in record:
+                line += str(ele) + "\t"
+            line += "\n"
+            print(line)
+    
+    def print_rconst(self):
+        '''
+            打印常量表
+        '''
+        print("常量表")
+        for record in self.rconst:
+            line = ""
+            for ele in record:
+                line += str(ele) + "\t"
+            line += "\n"
+            print(line)
+    
+    def print_error(self):
+        '''
+            打印报错信息
+        '''
+        print("错误信息")
+        for record in self.error_msg_box:
+            print(record)
+    
+    def report_result(self):
+        '''
+            打印编译结果
+        '''
+        self.print_display()
+        self.print_rconst()
+        self.print_Pcode()
+        self.print_error()
+
         
     def read(self, file_name: str):
         self.input_file_name = file_name
@@ -409,7 +476,16 @@ class norm_C0_compiler():
         if wd[2] != '标识符' :
             self._error('应为标识符')
             return False
-        self._getword()
+        wd = self._getword()
+        name = wd[3]
+        i = self._lookup_variable(name)
+        record = self.display[i]
+        addr = record[3]
+        lev = record[4]
+        code = ["LDA", 0, lev, addr]
+        self._gen_Pcode(code)
+        code = ["RED", 27, "", 1]
+        self._gen_Pcode(code)
         wd = self._curword()
         if wd[2] != ')':
             self._error('应为)')
@@ -430,6 +506,9 @@ class norm_C0_compiler():
         self._getword()
         wd = self._curword()
         if wd[2] == '字符串':
+            #   由于Pcode没有具体处理字符串的方法，所以简化为一条指令
+            code = ["WRS", 28, "", 1]
+            self._gen_Pcode(code)
             self._getword()
             wd = self._curword()
             if wd[2] == '专用符号' and wd[3] == ',':
@@ -437,6 +516,8 @@ class norm_C0_compiler():
                 wd = self._curword()
         if wd[2] == '+' or wd[2] == '-' or wd[2] == '标识符':
             res = self.s_expression()
+            code = ["WRW", 29, "", 1]
+            self._gen_code(code)
             if not res:
                 return False
         wd = self._curword()
@@ -646,6 +727,7 @@ class norm_C0_compiler():
         '''
            ＜循环语句＞ ::=  while‘（’＜条件＞‘）’＜语句＞ 
         '''
+        jmp_back_code = ["JMP", 10, "", len(self.code)]
         self._getword()
         wd = self._curword()
         if wd[2] != '专用符号' or wd[3] != '(':
@@ -660,6 +742,8 @@ class norm_C0_compiler():
         if not res:
             return False
         wd = self._curword()
+        JPC_id = len(self.code)
+        JPC_code = ["JPC", 11, "", ""]
         if wd[2] != '专用符号' or wd[3] != ')':
             self._error("应为)")
             return False
@@ -667,6 +751,10 @@ class norm_C0_compiler():
         res = self.s_statement()
         if not res:
             return False
+        self._gen_Pcode(jmp_back_code)
+        target = line(self.code)
+        JPC_code = ["JPC", 11, "", target]
+        if not self._zipper_fill(JPC_id, JPC_code)
         return True
     
     def s_condition(self):
@@ -730,13 +818,26 @@ class norm_C0_compiler():
             self._error("应为)")
             return False
         self._getword()
+        JPC_id = len(self.code)
+        JPC_code = ["JPC", 11, "", ""]
         res = self.s_statement()
+        JMP_id = len(self.code)
+        JMP_code = ["JMP", 10, "", ""]
         if not res:
             return False
         wd = self._curword()
         if wd[2] == '关键字' and wd[3] == 'ELSE':
+            #   拉链回填
+            target = len(self.code)
+            JPC_code = ["JPC", 11, "", target]
+            if not self._zipper_fill(JPC_id, JPC_code):
+                return False
             self._getword()
             res = self.s_statement()
+            target = len(self.code)
+            JMP_code = ["JMP", 10, "", target]
+            if not self._zipper_fill(JMP_id, JMP_code):
+                return False
             if not res:
                 return False
         return True
@@ -998,11 +1099,16 @@ class norm_C0_compiler():
         if wd[2] != '关键字' or wd[3] != 'MAIN':
             self._error("应为main")
             return False
+        pre_lev = self.pre_lev
+        cur_lev = self.cur_lev
+        self._new_lev(self.pre_lev)
         self._getword()
         res = self.s_param()
         if not res:
             return False
         res = self.s_compound_statement()
+        self.cur_lev = cur_lev
+        self.pre_lev = pre_lev
         if not res:
             return False
         return True
