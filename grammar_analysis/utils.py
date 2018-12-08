@@ -307,7 +307,7 @@ class norm_C0_compiler():
         '''
             在display区中插入一条记录
         '''
-        res = self._lookup_varaible(name)
+        res = self._lookup_variable(name)
         if res != 'error':
             self._error(str(name) + "重复定义")
             return False
@@ -335,7 +335,7 @@ class norm_C0_compiler():
         self._insert_display(ret_addr_name, 'ret_addr', None, None, self.cur_lev)
         self._insert_display(self.pre_lev, 'abp', self.pre_lev, None, self.cur_lev)
     
-    def _lookup_varaible(self, name: str):
+    def _lookup_variable(self, name: str):
         '''
             在display区查找一个变量
         '''
@@ -348,6 +348,8 @@ class norm_C0_compiler():
                 res = self._lookup_abp(record[0], name)
                 if res != "error":
                     return res
+                else:
+                    i += 1
             else:
                 i += 1
         return "error"
@@ -361,6 +363,8 @@ class norm_C0_compiler():
             if record[1] != 'abp' and record[4] == lev:
                 if record[0] == name:
                     return i
+                else:
+                    i += 1
             else:
                 i += 1
         return "error"
@@ -411,8 +415,11 @@ class norm_C0_compiler():
             打印变量表
         '''
         print("变量表")
+        print("name\t" + "type\t" + "value\t" + "addr\t" + "lev\t")
         for record in self.display:
             line = ""
+            if record[1] == "abp" or record[1] == "ret_addr":
+                continue
             for ele in record:
                 line += str(ele) + "\t"
             line += "\n"
@@ -423,6 +430,7 @@ class norm_C0_compiler():
             打印常量表
         '''
         print("常量表")
+        print("name\t" + "value\t")
         for record in self.rconst:
             line = ""
             for ele in record:
@@ -442,10 +450,12 @@ class norm_C0_compiler():
         '''
             打印编译结果
         '''
-        self.print_display()
-        self.print_rconst()
-        self.print_Pcode()
-        self.print_error()
+        if len(self.error_msg_box) > 0:
+            self.print_error()
+        else:
+            self.print_display()
+            self.print_rconst()
+            self.print_Pcode()
 
         
     def read(self, file_name: str):
@@ -523,7 +533,7 @@ class norm_C0_compiler():
         if wd[2] == '+' or wd[2] == '-' or wd[2] == '标识符':
             res = self.s_expression()
             code = ["WRW", 29, "", 1]
-            self._gen_code(code)
+            self._gen_Pcode(code)
             if not res:
                 return False
         wd = self._curword()
@@ -586,6 +596,7 @@ class norm_C0_compiler():
             name = word[0]
             if lev == self.cur_lev and name == 'ret_addr':
                 i = word[3] + 1
+                break
         if i == -1:
             return False
         pre_lev = self.display[i][0]
@@ -693,15 +704,15 @@ class norm_C0_compiler():
         #   在符号表找到对应的函数
         wd = self._getword()
         name = wd[3]
-        i = self._lookup_varaible(name)
+        i = self._lookup_variable(name)
         if i == "error":
             self._error(name + "未定义")
-            return False
+            return 'error'
         record = self.display[i]
         typ = record[1]
         if typ != 'func':
             self._error(name + "不是可调用的类型")
-            return False
+            return 'error'
         #   调用之前先压栈
         code = ["MKS", 18, "", self.cur_lev]
         self._gen_Pcode(code)
@@ -709,21 +720,21 @@ class norm_C0_compiler():
         wd = self._curword()
         if wd[2] != '专用符号' or wd[3] != '(':
             self._error("应为(")
-            return False
+            return 'error'
         self._getword()
         res = self.s_value_param_list(i)
         if not res:
-            return False
+            return 'error'
         wd = self._curword()
         if wd[2] != '专用符号' or wd[3] != ')':
             self._error("应为)")
-            return False
+            return 'error'
         #   然后调用函数
         addr = record[3]
         code = ["CAL", 19, "", addr]
         self._gen_Pcode(code)
         self._getword()
-        return True
+        return name
     
     def s_while_statement(self):
         '''
@@ -855,7 +866,7 @@ class norm_C0_compiler():
             return False
         wd = self._getword()
         name = wd[3]
-        i = self._lookup_varaible(name)
+        i = self._lookup_variable(name)
         if i == "error":
             self._error("未定义")
             return False
@@ -995,10 +1006,10 @@ class norm_C0_compiler():
             if wd[2] == '专用符号' and wd[3] == '(':
                 self.words_p = p0
                 res = self.s_function_call_statement()
-                if not res:
+                if res == 'error':
                     return False
                 wd = self._curword()
-                name = wd[3]
+                name = res
                 i = self._lookup_variable(name)
                 if i == "error":
                     self._error("未定义")
@@ -1006,14 +1017,9 @@ class norm_C0_compiler():
                 record = self.display[i]
                 lev = record[4]
                 x = lev
-                y = -1
-                for word in self.display:
-                    if word[4] == lev and word[0] == 'ret_address':
-                        y = word[3]
-                if y == -1 :
-                    return False
+                y = self.display[i+1][3]
                 code = ["LOD", 1, x, y]
-                self.code.extend(code)
+                self._gen_Pcode(code)
                 return True
             else:
                 wd = self.words[p0]
@@ -1023,7 +1029,7 @@ class norm_C0_compiler():
                     value = self.rconst[i][1]
                     code = ["LDC", 24, "", value]
                 else:
-                    i = self._lookup_varaible(name)
+                    i = self._lookup_variable(name)
                     if i == "error":
                         self._error(name + "未定义")
                         return False
@@ -1113,6 +1119,8 @@ class norm_C0_compiler():
         if wd[2] != '关键字' or wd[3] != 'MAIN':
             self._error("应为main")
             return False
+        code = ["main:", "", "", ""]
+        self._gen_Pcode(code)
         pre_lev = self.pre_lev
         cur_lev = self.cur_lev
         self._new_lev(self.pre_lev)
@@ -1227,7 +1235,10 @@ class norm_C0_compiler():
             name = wd[3]
             self._getword()
             wd = self._curword()
-            self._insert_display(name, 'func', None, None, self.cur_lev)
+            addr = len(self.code)
+            self._insert_display(name, 'func', None, addr, self.cur_lev)
+            code = [name + ":", "", "", ""]
+            self._gen_Pcode(code)
         elif wd[2] == '关键字' and wd[3] == 'INT':
             self._getword()
             wd = self._curword()
@@ -1239,17 +1250,20 @@ class norm_C0_compiler():
             wd = self._getword()
             name = wd[3]
             wd = self._curword()
-            self._insert_display(name, 'func', None, None, self.cur_lev)
+            addr = len(self.code)
+            self._insert_display(name, 'func', None, addr, self.cur_lev)
+            code = [name + ":", "", "", ""]
+            self._gen_Pcode(code)
         self.pre_lev = self.cur_lev
         self._new_lev(self.cur_lev)
         res = self.s_param()
         if not res:
             return False
-        i = self._lookup_varaible(name)
+        i = self._lookup_variable(name)
         self.display[i][2] = res
         wd = self._curword()
         res = self.s_compound_statement()
-        self.cur_lev = self.pre_lev
+        #self.cur_lev = self.pre_lev
         if not res:
             return False
         return True
