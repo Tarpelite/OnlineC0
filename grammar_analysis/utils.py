@@ -1,4 +1,4 @@
-from lexer import C0lexer
+from .lexer import C0lexer
 import os
 
 
@@ -474,7 +474,7 @@ class norm_C0_compiler():
             添加报错信息
         '''
         wd = self._curword()
-        msg = "line: " + wd[0] + " word: " + wd[1] + hint 
+        msg = "line: " + wd[0] + " "+ hint 
         self.error_msg_box.append(msg)
     
     def s_read(self):
@@ -877,7 +877,7 @@ class norm_C0_compiler():
         name = wd[3]
         i = self._lookup_variable(name)
         if i == "error":
-            self._error("未定义")
+            self._error(name + "未定义")
             return False
         record = self.display[i]
         typ = record[1]
@@ -1427,19 +1427,17 @@ class norm_C0_compiler():
 if __name__ == "__main__":
     #  debugging and test_case
     
-    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test2.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test5.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
-    lexer.print_result()
+    #lexer.print_result()
     lexer.output()
     errors = lexer.error_message_box
 
-    input_file_name = "/home/tarpe/shared/OnlineC0/test2wout.txt"
+    input_file_name = "/home/tarpe/shared/OnlineC0/test5wout.txt"
     compiler = norm_C0_compiler()
     compiler.error_msg_box = errors
     compiler.read(input_file_name)
-    print(compiler.words)
-    if not compiler.s_program():
-        for msg in compiler.error_msg_box:
-            print(msg)
+    #print(compiler.words)
+    compiler.s_program()
     compiler.report_result()

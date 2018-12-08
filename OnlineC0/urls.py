@@ -19,6 +19,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('lexer/', include('lexer.urls')),
-    path('OPG/', include('OPG.urls'))
-    
+    path('OPG/', include('OPG.urls')),
+    path('gramma/', include('grammar_analysis.urls'))   
 ]

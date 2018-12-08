@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'lexer',
     'OPG',
+    'grammar_analysis',
 ]
 
 MIDDLEWARE = [
