@@ -5,6 +5,11 @@ int add(int i, int j)
     return (i+j);
 }
 
+int sub(int k, int s)
+{
+    return (add(k, s) - 2*s);
+}
+
 int main()
 {
     int c;

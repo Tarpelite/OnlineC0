@@ -393,6 +393,8 @@ class norm_C0_compiler():
         code_suf = self.code[JPC_id:]
         for i in range(len(code_suf)):
             code_suf[i][0] = code_suf[i][0] + 1
+            if code_suf[i][1] == 'JPC':
+                code_suf[i][4] = code_suf[i][4] + 1
         code_pre.append(JPC_code)
         code_pre.extend(code_suf)
         self.code = code_pre
@@ -486,7 +488,7 @@ class norm_C0_compiler():
             return False
         self._getword()
         wd = self._curword()
-        if wd[2] != '标识符' :
+        if wd[2] != '标识符':
             self._error('应为标识符')
             return False
         wd = self._getword()
@@ -503,7 +505,7 @@ class norm_C0_compiler():
         code = ["RED", 27, "", 1]
         self._gen_Pcode(code)
         wd = self._curword()
-        if wd[2] != ')':
+        if wd[3] != ')':
             self._error('应为)')
             return False
         self._getword()
@@ -840,19 +842,26 @@ class norm_C0_compiler():
         if not res:
             return False
         wd = self._curword()
+        flag = 0
         if wd[2] == '关键字' and wd[3] == 'ELSE':
+            flag = 1
             #   拉链回填
             target = len(self.code)
-            JPC_code = ["JPC", 11, "", target]
+            JPC_code = ["JPC", 11, "", target + 1]
             if not self._zipper_fill(JPC_id, JPC_code):
                 return False
             self._getword()
             res = self.s_statement()
             target = len(self.code)
             JMP_code = ["JMP", 10, "", target]
-            if not self._zipper_fill(JMP_id, JMP_code):
+            if not self._zipper_fill(JMP_id + 1, JMP_code):
                 return False
             if not res:
+                return False
+        if flag == 0:
+            target = len(self.code)
+            JPC_code[-1] = target
+            if not self._zipper_fill(JPC_id, JPC_code):
                 return False
         return True
     
@@ -1391,9 +1400,10 @@ class norm_C0_compiler():
                     if res:
                         flag = 1
                 else:
-                    self.words_p = p1
+                    self.words_p = p0
                     wd = self._curword()
                     res = self.s_variable_description()
+                    p0 = self.words_p
                     if not res:
                         return False
         while flag == 1:
@@ -1422,9 +1432,11 @@ if __name__ == "__main__":
     lexer.word_analyze()
     lexer.print_result()
     lexer.output()
+    errors = lexer.error_message_box
 
     input_file_name = "/home/tarpe/shared/OnlineC0/test2wout.txt"
     compiler = norm_C0_compiler()
+    compiler.error_msg_box = errors
     compiler.read(input_file_name)
     print(compiler.words)
     if not compiler.s_program():
