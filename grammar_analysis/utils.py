@@ -3,7 +3,7 @@ import os
 
 
 class special_lexer(C0lexer):
-    def __init__(self, INPUT_FILE_NAME: str):
+    def __init__(self, INPUT_FILE_NAME = 'web'):
         '''
             lexer的初始化
         '''
@@ -412,6 +412,20 @@ class norm_C0_compiler():
             record += "\n"
             print(record)
     
+    def web_output_Pcode_table(self):
+        '''
+            生成H5代码
+        '''
+        h5 = ""
+        for code in self.code:
+            line = "<tr>"
+            for ele in code:
+                line += "<td>" + str(ele) + "</td>"
+            line += "</tr>"
+            h5 += line
+        return h5
+
+    
     def print_display(self):
         '''
             打印变量表
@@ -427,6 +441,21 @@ class norm_C0_compiler():
             line += "\n"
             print(line)
     
+    def web_output_display_table(self):
+        '''
+            生成H5表格代码
+        '''
+        h5 = ""
+        for record in self.display:
+            line = "<tr>"
+            if record[1] == "abp" or record[1] == 'ret_addr':
+                continue
+            for ele in record:
+                line += "<td>" + str(ele) + "</td>"
+            line += "</tr>"
+            h5 += line
+        return h5
+    
     def print_rconst(self):
         '''
             打印常量表
@@ -440,6 +469,19 @@ class norm_C0_compiler():
             line += "\n"
             print(line)
     
+    def web_output_rconst_table(self):
+        '''
+            生成H5代码
+        '''
+        h5 = ""
+        for record in self.rconst:
+            line = "<tr>"
+            for ele in record:
+                line += "<td>" + str(ele) + "</td>"
+            line += "</tr>"
+            h5 += line
+        return h5
+    
     def print_error(self):
         '''
             打印报错信息
@@ -447,6 +489,19 @@ class norm_C0_compiler():
         print("错误信息")
         for record in self.error_msg_box:
             print(record)
+    
+    def web_output_error_table(self):
+        '''
+            生成H5代码
+        '''
+        i = 0
+        h5 = ""
+        for record in self.error_msg_box:
+            line = "<tr class=\"danger\" >"
+            line += "<td>" + record + "</td>"
+            line += "</tr>"
+            h5 += line
+        return h5
     
     def report_result(self):
         '''
@@ -474,7 +529,7 @@ class norm_C0_compiler():
             添加报错信息
         '''
         wd = self._curword()
-        msg = "line: " + wd[0] + " "+ hint 
+        msg = "line: " + str(wd[0]) + " "+ hint 
         self.error_msg_box.append(msg)
     
     def s_read(self):
@@ -1427,17 +1482,19 @@ class norm_C0_compiler():
 if __name__ == "__main__":
     #  debugging and test_case
     
-    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test5.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test3.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     #lexer.print_result()
     lexer.output()
     errors = lexer.error_message_box
+    words = lexer.RESULT
 
     input_file_name = "/home/tarpe/shared/OnlineC0/test5wout.txt"
     compiler = norm_C0_compiler()
     compiler.error_msg_box = errors
-    compiler.read(input_file_name)
+    #compiler.read(input_file_name)
+    compiler.words = words
     #print(compiler.words)
     compiler.s_program()
     compiler.report_result()

@@ -20,8 +20,8 @@
                         <div class="progress progress-striped active">
                                 <div class="progress-bar progress-bar-success" role="progressbar"
                                      aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
-                                     style="width: 30%;">
-                                    <span class="sr-only">30% 完成</span>
+                                     style="width: 80%;">
+                                    <span class="sr-only">80% 完成</span>
                                 </div>
                             </div>
                     </div>
@@ -41,102 +41,79 @@
         
         <div class="row clearfix">
             <div class="col-md-6 column">
-                <h4>
-                    算符优先文法分析
-                </h4>
                 <ul class="nav nav-list"><li class="divider"></li></ul>
-                <dl>
-                    <dt>
-                        默认文法
-                    </dt>
-                    <dd>
-                        <li>G[E]:</li>
-                        <li>E -> E+T|T</li>
-                        <li>T -> T*F|F</li>
-                        <li>F ->(E)|i </li>
-                    </dd>
-                    <dt>
-                        自定义文法规则
-                    </dt>
-                    <dd>
-                       <li>用字母表示非终结符</li>
-                       <li>'->'或':='表示赋值</li>
-                       <li>'|'表示选择</li>
-                       <li>当然，你还需要确定开始符号</li>
-                    </dd>
-                    <dt>
-                        输入格式
-                    </dt>
-                    <dd>
-                       <li>如需自定义文法，请仿照默认文法规则输入，并勾选使用自定义文法</li>
-                       <li>输入该文法下的测试语句</li>
-                    </dd>
-                    <dt>
-                        输出格式
-                    </dt>
-                    <dd>
-                       <li>产生式集合</li>
-                       <li>FirstVt集合</li>
-                       <li>LastVt集合</li>
-                       <li>算符优先关系表</li>
-                       <li>分析步骤表</li>
-                    </dd>
-                </dl>
-                <form class="form-horizontal" role="form" action="/OPG/" method="POST" enctype="multipart/form-data">
+                <form class="form-horizontal" role="form" action="/gramma/" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         {% csrf_token %}
-                         <label for="customed-grammary">自定义文法：</label>
-                         <textarea class="form-control" id="customed-grammary" rows="10" name="grammary" >
+                         <label for="customed-grammary">测试程序：</label>
+                         <textarea class="form-control" id="customed-grammary" rows="10" name="code" >
                          </textarea>
                     </div>
                     <div class="form-group">
                         {% csrf_token %}
-                         <label for="InputFile1" >自定义文法文件(可选项,不超过2.5M)</label>
-                         <input type="file" id="InputFile1" name="gramma_file" accept=".txt,.c0"/>
+                         <label for="InputFile1" >自定义测试文件(可选项,不超过2.5M)</label>
+                         <input type="file" id="InputFile1" name="test_file" accept=".txt,.c0"/>
                     </div>
-                    <div class="form-group">
-                        {% csrf_token %}
-                         <label for="customed-start">自定义文法开始符号：</label>
-                         <input type="text" id="customed-start" name="start" >
-                    </div>
-                    <div class="checkbox" name="check">
-                        {% csrf_token %}
-                         <label><input type="checkbox" name="check"/>使用自定义文法</label>
-                    </div>
-                    <div class="form-group">
-                        {% csrf_token %}
-                         <label for="test-code">测试语句：</label>
-                         <textarea class="form-control"  placeholder="i+i" id="test-code" rows="5" name="code" >
-                         </textarea>
-                    </div>
-                    <div class="form-group">
-                        {% csrf_token %}
-                         <label for="InputFile2" >测试语句文件(可选项,不超过2.5M)</label>
-                         <input type="file" id="InputFile2" name="code_file" accept=".txt,.c0"/>
-                    </div>
-
                     <button type="submit" class="btn btn-default">一键分析</button>
+                    <ul class="nav nav-list"><li class="divider"></li></ul>
+                    <br>
+                    <br>
+                    <label for="display-code">接收到的代码:</label>
+                    <pre id="display-code">
+{{ 代码 }}
+                    </pre>
                 </form>
             </div>
 
             <div class="col-md-6 column">
                 <div class="table-responsive">
-                   {{ 表格1 }}
+                    <table class="table table-striped">
+                    <caption>变量表</caption>
+                    <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>type</th>
+                            <th>value</th>
+                            <th>addr</th>
+                            <th>lev</th>
+                        </tr>
+                        {{ 表格1 }}
+                    </table>
                 </div>
                 <div class="table-responsive">
-                   {{ 表格2 }}
+                    <table class="table table-striped">
+                    <caption>常量表</caption>
+                    <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>value</th>
+                        </tr>
+                        {{ 表格2 }}
+                    </table>
                 </div>
                 <div class="table-responsive">
-                    {{ 表格3 }}
+                    <table class="table table-striped">
+                    <caption>Pcode</caption>
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Token</th>
+                            <th>f</th>
+                            <th>x</th>
+                            <th>y</th>
+                        </tr>
+                        {{ 表格3 }}
+                    </table>
                 </div>
                 <div class="table-responsive">
-                    {{ 表格4 }}
-                </div>
-                <div class="table-responsive">
-                    {{ 表格5 }}
-                </div>
-                <div class="table-responsive">
-                    {{ 表格6 }}
+                    <table class="table table-striped">
+                    <caption>错误信息</caption>
+                    <thead>
+                        <tr>
+                            <th>Info</th>
+                        </tr>
+                        {{ 表格4 }}
+                    </table>
                 </div>
             </div>
         </div>
