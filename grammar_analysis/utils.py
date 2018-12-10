@@ -1,11 +1,16 @@
-from .lexer import C0lexer
+from .lexer import C0lexer  
 import os
 
 
 class special_lexer(C0lexer):
+    '''
+        词法分析器,是C0lexer的子类
+    '''
     def __init__(self, INPUT_FILE_NAME = 'web'):
-        '''
-            lexer的初始化
+        '''lexer的初始化
+        
+        Args:
+            INPUT_FILE_NAME: 输入文件的路径
         '''
         C0lexer.__init__(self, INPUT_FILE_NAME)
         self.INPUT_FILE_NAME = INPUT_FILE_NAME
@@ -228,6 +233,9 @@ class special_lexer(C0lexer):
 
 
 class norm_C0_compiler():
+    '''
+    C0编译器
+    '''
     def __init__(self):
         self.input_file_name = ""
         self.words = []
@@ -575,7 +583,7 @@ class norm_C0_compiler():
     def s_write(self):
         '''
           ＜写语句＞ ::=  printf‘(’[<字符串>,][＜expression ＞]‘）’
-　　　　　 //当出现字符串时，就加印字符串, 之后打印表达式的值；
+　　　　　 当出现字符串时，就加印字符串, 之后打印表达式的值；
         '''
         self._getword()
         wd = self._curword()
@@ -605,7 +613,7 @@ class norm_C0_compiler():
             return False
         self._getword()
         return True
-    
+   
     def s_return(self):
         '''
             ＜返回语句＞ ::=  return [ ‘(’＜表达式＞’)’ ] 
@@ -683,7 +691,8 @@ class norm_C0_compiler():
     
     def s_statement_series(self):
         '''
-            ＜语句序列＞ ::=  ＜语句＞｛＜语句＞｝
+            ＜语句序列＞ ::=  ＜语句＞｛＜语句＞｝ 
+
         '''
         res = self.s_statement()
         if not res:
@@ -695,7 +704,6 @@ class norm_C0_compiler():
                 wd = self._curword()
             else:
                 break
-            
         return True
     
     def s_value_param_list(self, display_index: int):
