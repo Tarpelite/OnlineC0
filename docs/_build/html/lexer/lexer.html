@@ -9,17 +9,16 @@
     <title>词法分析器Lexer &#8212; OnlineC0  文档</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/translations.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="算法优先文法分析器OPGA" href="../OPG/OPGA.html" />
     <link rel="prev" title="前端交互页面views" href="views.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
@@ -29,80 +28,78 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <div class="section" id="lexer">
-<h1>词法分析器Lexer<a class="headerlink" href="#lexer" title="永久链接至标题">¶</a></h1>
+<h1>词法分析器Lexer<a class="headerlink" href="#lexer" title="标题的永久链接">¶</a></h1>
 <dl class="class">
 <dt id="lexer.lexer.C0lexer">
-<em class="property">class </em><code class="descclassname">lexer.lexer.</code><code class="descname">C0lexer</code><span class="sig-paren">(</span><em>INPUT_FILE_NAME: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer" title="永久链接至目标">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lexer.lexer.</code><code class="descname">C0lexer</code><span class="sig-paren">(</span><em>INPUT_FILE_NAME: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer" title="定义的永久链接">¶</a></dt>
 <dd><p>多功能词法分析器</p>
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.getsym">
-<code class="descname">getsym</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.getsym"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.getsym" title="永久链接至目标">¶</a></dt>
+<code class="descname">getsym</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.getsym"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.getsym" title="定义的永久链接">¶</a></dt>
 <dd><p>分析下一个TOKEN</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.clearToken">
-<code class="descname">clearToken</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.clearToken"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.clearToken" title="永久链接至目标">¶</a></dt>
+<code class="descname">clearToken</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.clearToken"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.clearToken" title="定义的永久链接">¶</a></dt>
 <dd><p>清空目前已经读取的字符缓存</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.curChar">
-<code class="descname">curChar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.curChar"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.curChar" title="永久链接至目标">¶</a></dt>
+<code class="descname">curChar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.curChar"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.curChar" title="定义的永久链接">¶</a></dt>
 <dd><p>返回当前指针指向的字符</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.isDigit">
-<code class="descname">isDigit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.isDigit"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.isDigit" title="永久链接至目标">¶</a></dt>
+<code class="descname">isDigit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.isDigit"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.isDigit" title="定义的永久链接">¶</a></dt>
 <dd><p>判断当前字符是否为数字</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.isLetter">
-<code class="descname">isLetter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.isLetter"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.isLetter" title="永久链接至目标">¶</a></dt>
+<code class="descname">isLetter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.isLetter"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.isLetter" title="定义的永久链接">¶</a></dt>
 <dd><p>判断当前字符为字母</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.getchar">
-<code class="descname">getchar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.getchar"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.getchar" title="永久链接至目标">¶</a></dt>
+<code class="descname">getchar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.getchar"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.getchar" title="定义的永久链接">¶</a></dt>
 <dd><p>将当前字符加入TOKEN末尾
 文件指针+1</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.tobin">
-<code class="descname">tobin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.tobin"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.tobin" title="永久链接至目标">¶</a></dt>
+<code class="descname">tobin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.tobin"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.tobin" title="定义的永久链接">¶</a></dt>
 <dd><p>十进制转二进制</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.error">
-<code class="descname">error</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.error"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.error" title="永久链接至目标">¶</a></dt>
+<code class="descname">error</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.error"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.error" title="定义的永久链接">¶</a></dt>
 <dd><p>出错提示</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.word_analyze">
-<code class="descname">word_analyze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.word_analyze"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.word_analyze" title="永久链接至目标">¶</a></dt>
+<code class="descname">word_analyze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.word_analyze"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.word_analyze" title="定义的永久链接">¶</a></dt>
 <dd><p>自动词法分析至出错或到文件末尾</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.web_word_analyze">
-<code class="descname">web_word_analyze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.web_word_analyze"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.web_word_analyze" title="永久链接至目标">¶</a></dt>
+<code class="descname">web_word_analyze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.web_word_analyze"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.web_word_analyze" title="定义的永久链接">¶</a></dt>
 <dd><p>用于服务器的词法分析接口</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lexer.lexer.C0lexer.output">
-<code class="descname">output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.output"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.output" title="永久链接至目标">¶</a></dt>
+<code class="descname">output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lexer/lexer.html#C0lexer.output"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#lexer.lexer.C0lexer.output" title="定义的永久链接">¶</a></dt>
 <dd><p>输出词法分析结果文件</p>
 </dd></dl>
 
@@ -112,56 +109,37 @@
 
 
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">OnlineC0</a></h1>
-
-
-
-
-
-
-
-
-<h3>导航</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro.html">C0 编译器进度</a></li>
-<li class="toctree-l1"><a class="reference internal" href="views.html">前端交互页面views</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">词法分析器Lexer</a></li>
-</ul>
-
-<div class="relations">
+        <div class="sphinxsidebarwrapper"><div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
       <li>Previous: <a href="views.html" title="上一章">前端交互页面views</a></li>
+      <li>Next: <a href="../OPG/OPGA.html" title="下一章">算法优先文法分析器OPGA</a></li>
   </ul></li>
 </ul>
 </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/lexer/lexer.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>快速搜索</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
-      <input type="submit" value="转向" />
+      <input type="submit" value="搜" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
@@ -170,8 +148,8 @@
       &copy;2018, Tarpelite.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="../_sources/lexer/lexer.rst.txt"

@@ -8,14 +8,21 @@
 \PassOptionsToPackage{warn}{textcomp}
 \usepackage[utf8]{inputenc}
 \ifdefined\DeclareUnicodeCharacter
-% support both utf8 and utf8x syntaxes
-\edef\sphinxdqmaybe{\ifdefined\DeclareUnicodeCharacterAsOptional\string"\fi}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe00A0}{\nobreakspace}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe2500}{\sphinxunichar{2500}}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe2502}{\sphinxunichar{2502}}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe2514}{\sphinxunichar{2514}}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe251C}{\sphinxunichar{251C}}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe2572}{\textbackslash}
+ \ifdefined\DeclareUnicodeCharacterAsOptional
+  \DeclareUnicodeCharacter{"00A0}{\nobreakspace}
+  \DeclareUnicodeCharacter{"2500}{\sphinxunichar{2500}}
+  \DeclareUnicodeCharacter{"2502}{\sphinxunichar{2502}}
+  \DeclareUnicodeCharacter{"2514}{\sphinxunichar{2514}}
+  \DeclareUnicodeCharacter{"251C}{\sphinxunichar{251C}}
+  \DeclareUnicodeCharacter{"2572}{\textbackslash}
+ \else
+  \DeclareUnicodeCharacter{00A0}{\nobreakspace}
+  \DeclareUnicodeCharacter{2500}{\sphinxunichar{2500}}
+  \DeclareUnicodeCharacter{2502}{\sphinxunichar{2502}}
+  \DeclareUnicodeCharacter{2514}{\sphinxunichar{2514}}
+  \DeclareUnicodeCharacter{251C}{\sphinxunichar{251C}}
+  \DeclareUnicodeCharacter{2572}{\textbackslash}
+ \fi
 \fi
 \usepackage{cmap}
 \usepackage[T1]{fontenc}
@@ -27,7 +34,6 @@
 \ChTitleVar{\Large\normalfont\sffamily}
 \usepackage{sphinx}
 
-\fvset{fontsize=\small}
 \usepackage{geometry}
 
 % Include hyperref last.
@@ -43,10 +49,7 @@
 \addto\captionsenglish{\renewcommand{\literalblockname}{列表}}
 
 \addto\captionsenglish{\renewcommand{\literalblockcontinuedname}{续上页}}
-\addto\captionsenglish{\renewcommand{\literalblockcontinuesname}{下页继续}}
-\addto\captionsenglish{\renewcommand{\sphinxnonalphabeticalgroupname}{Non-alphabetical}}
-\addto\captionsenglish{\renewcommand{\sphinxsymbolsname}{符号}}
-\addto\captionsenglish{\renewcommand{\sphinxnumbersname}{Numbers}}
+\addto\captionsenglish{\renewcommand{\literalblockcontinuesname}{continues on next page}}
 
 \addto\extrasenglish{\def\pageautorefname{页}}
 
@@ -55,426 +58,499 @@
 
 
 \title{OnlineC0 Documentation}
-\date{2018 年 11 月 19 日}
+\date{2018 年 12 月 10 日}
 \release{}
 \author{Tarpelite}
 \newcommand{\sphinxlogo}{\vbox{}}
 \renewcommand{\releasename}{}
 \makeindex
+
 \begin{document}
 
-\ifdefined\shorthandoff
-  \ifnum\catcode`\=\string=\active\shorthandoff{=}\fi
-  \ifnum\catcode`\"=\active\shorthandoff{"}\fi
-\fi
-
-\pagestyle{empty}
 \maketitle
-\pagestyle{plain}
 \sphinxtableofcontents
-\pagestyle{normal}
 \phantomsection\label{\detokenize{index::doc}}
 
 
 
-\chapter{Indices and tables}
-\label{\detokenize{index:indices-and-tables}}\begin{itemize}
+\chapter{内容}
+\label{\detokenize{index:id1}}\label{\detokenize{index:onlinec0}}
+
+\section{C0 编译器进度}
+\label{\detokenize{intro:c0}}\label{\detokenize{intro::doc}}
+
+\subsection{词法分析}
+\label{\detokenize{intro:id1}}
+首先，选择一符一类的方式来分析C0语法，得到分析结果如下：
+
+\sphinxstyleemphasis{终结符Vt（除关键字）:}
+\begin{enumerate}
 \item {} 
-\DUrole{xref,std,std-ref}{genindex}
+‘+’
 
 \item {} 
-\DUrole{xref,std,std-ref}{modindex}
+‘-‘
 
 \item {} 
-\DUrole{xref,std,std-ref}{search}
+‘*’
 
-\end{itemize}
+\item {} 
+/
+
+\item {} 
+\textless{}
+
+\item {} 
+\textless{}=
+
+\item {} 
+\textgreater{}
+
+\item {} 
+\textgreater{}=
+
+\item {} 
+!=
+
+\item {} 
+==
+
+\item {} 
+\_azAZ
+
+\item {} 
+0-9
+
+\item {} 
+(
+
+\item {} 
+)
+
+\item {} 
+\{
+
+\item {} 
+\}
+
+\item {} 
+,
+
+\item {} 
+;
+
+\item {} 
+=
+
+\item {} 
+.
+
+\item {} 
+:
+
+\end{enumerate}
+
+\sphinxstyleemphasis{关键字:}
+\begin{enumerate}
+\item {} 
+const
+
+\item {} 
+int
+
+\item {} 
+void
+
+\item {} 
+if
+
+\item {} 
+else
+
+\item {} 
+while
+
+\item {} 
+main
+
+\item {} 
+return
+
+\item {} 
+printf
+
+\item {} 
+scanf
+
+\end{enumerate}
+
+\sphinxstyleemphasis{标识符}
+
+1.变量名
+2.数组名
+3.函数名
+
+\sphinxstyleemphasis{常数:}
+
+1.整数
+2.浮点数
+3.字符串
+
+\sphinxstyleemphasis{分界符:}
+\begin{enumerate}
+\item {} 
+‘+’
+
+\item {} 
+‘-‘
+
+\item {} 
+‘*’
+
+\item {} 
+/
+
+\item {} 
+\textless{}
+
+\item {} 
+\textless{}=
+
+\item {} 
+\textgreater{}
+
+\item {} 
+\textgreater{}=
+
+\item {} 
+!=
+
+\item {} 
+==
+
+\item {} 
+（
+
+\item {} 
+）
+
+\item {} 
+\{
+
+\item {} 
+\}
+
+\item {} 
+，
+
+\item {} 
+；
+
+\item {} 
+=
+
+\item {} 
+.
+
+\item {} 
+:
+
+\item {} 
+“
+
+\item {} 
+“
+
+\end{enumerate}
+
+\sphinxstyleemphasis{双目分界符:}
+\begin{enumerate}
+\item {} 
+\textless{}=
+
+\item {} 
+\textgreater{}=
+
+\item {} 
+!=
+
+\item {} 
+==
+
+\end{enumerate}
 
 
-\chapter{lexer.models module}
-\label{\detokenize{index:module-lexer.models}}\label{\detokenize{index:lexer-models-module}}\index{lexer.models (模块)@\spxentry{lexer.models}\spxextra{模块}}\index{File (lexer.models 中的类)@\spxentry{File}\spxextra{lexer.models 中的类}}
+\section{前端交互页面views}
+\label{\detokenize{lexer/views::doc}}\label{\detokenize{lexer/views:module-lexer.views}}\label{\detokenize{lexer/views:views}}\index{lexer.views (模块)}\index{complie() (在 lexer.views 模块中)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.models.File}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class }}\sphinxcode{\sphinxupquote{lexer.models.}}\sphinxbfcode{\sphinxupquote{File}}}{\emph{id}, \emph{title}, \emph{content}}{}
-基类：\sphinxcode{\sphinxupquote{django.db.models.base.Model}}
-\index{File.DoesNotExist@\spxentry{File.DoesNotExist}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.models.File.DoesNotExist}}\pysigline{\sphinxbfcode{\sphinxupquote{exception }}\sphinxbfcode{\sphinxupquote{DoesNotExist}}}
-基类：\sphinxcode{\sphinxupquote{django.core.exceptions.ObjectDoesNotExist}}
+\phantomsection\label{\detokenize{lexer/views:lexer.views.complie}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{lexer.views.}}\sphinxbfcode{\sphinxupquote{complie}}}{\emph{request}}{}
+对POST请求进行处理，去掉表单中多余的字符后交由词法分析器，
+再将渲染的结果返回给客户端
 
 \end{fulllineitems}
 
-\index{File.MultipleObjectsReturned@\spxentry{File.MultipleObjectsReturned}}
+
+
+\section{词法分析器Lexer}
+\label{\detokenize{lexer/lexer::doc}}\label{\detokenize{lexer/lexer:lexer}}\index{C0lexer (lexer.lexer 中的类)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.models.File.MultipleObjectsReturned}}\pysigline{\sphinxbfcode{\sphinxupquote{exception }}\sphinxbfcode{\sphinxupquote{MultipleObjectsReturned}}}
-基类：\sphinxcode{\sphinxupquote{django.core.exceptions.MultipleObjectsReturned}}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class }}\sphinxcode{\sphinxupquote{lexer.lexer.}}\sphinxbfcode{\sphinxupquote{C0lexer}}}{\emph{INPUT\_FILE\_NAME: str}}{}
+多功能词法分析器
+\index{getsym() (lexer.lexer.C0lexer 方法)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.getsym}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{getsym}}}{}{}
+分析下一个TOKEN
 
 \end{fulllineitems}
 
-\index{content (lexer.models.File 属性)@\spxentry{content}\spxextra{lexer.models.File 属性}}
+\index{clearToken() (lexer.lexer.C0lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.models.File.content}}\pysigline{\sphinxbfcode{\sphinxupquote{content}}}
-A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.
-
-\end{fulllineitems}
-
-\index{id (lexer.models.File 属性)@\spxentry{id}\spxextra{lexer.models.File 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.models.File.id}}\pysigline{\sphinxbfcode{\sphinxupquote{id}}}
-A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.
-
-\end{fulllineitems}
-
-\index{objects (lexer.models.File 属性)@\spxentry{objects}\spxextra{lexer.models.File 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.models.File.objects}}\pysigline{\sphinxbfcode{\sphinxupquote{objects}}\sphinxbfcode{\sphinxupquote{ = \textless{}django.db.models.manager.Manager object\textgreater{}}}}
-\end{fulllineitems}
-
-\index{title (lexer.models.File 属性)@\spxentry{title}\spxextra{lexer.models.File 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.models.File.title}}\pysigline{\sphinxbfcode{\sphinxupquote{title}}}
-A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-
-
-\chapter{lexer.views module}
-\label{\detokenize{index:module-lexer.views}}\label{\detokenize{index:lexer-views-module}}\index{lexer.views (模块)@\spxentry{lexer.views}\spxextra{模块}}\index{complie() (在 lexer.views 模块中)@\spxentry{complie()}\spxextra{在 lexer.views 模块中}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.views.complie}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{lexer.views.}}\sphinxbfcode{\sphinxupquote{complie}}}{\emph{request}}{}
-\end{fulllineitems}
-
-
-
-\chapter{lexer.lexer module}
-\label{\detokenize{index:module-lexer.lexer}}\label{\detokenize{index:lexer-lexer-module}}\index{lexer.lexer (模块)@\spxentry{lexer.lexer}\spxextra{模块}}\index{C0lexer (lexer.lexer 中的类)@\spxentry{C0lexer}\spxextra{lexer.lexer 中的类}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class }}\sphinxcode{\sphinxupquote{lexer.lexer.}}\sphinxbfcode{\sphinxupquote{C0lexer}}}{\emph{INPUT\_FILE\_NAME: str}}{}
-基类：\sphinxcode{\sphinxupquote{object}}
-\begin{description}
-\item[{x}] \leavevmode{[}float{]}
-The X coordinate.
-
-\item[{y}] \leavevmode{[}float{]}
-The Y coordinate.
-
-\end{description}
-\index{INPUT\_FILE\_NAME (lexer.lexer.C0lexer 属性)@\spxentry{INPUT\_FILE\_NAME}\spxextra{lexer.lexer.C0lexer 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.INPUT_FILE_NAME}}\pysigline{\sphinxbfcode{\sphinxupquote{INPUT\_FILE\_NAME}}\sphinxbfcode{\sphinxupquote{ = ''}}}
-\end{fulllineitems}
-
-\index{KEYWORDS (lexer.lexer.C0lexer 属性)@\spxentry{KEYWORDS}\spxextra{lexer.lexer.C0lexer 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.KEYWORDS}}\pysigline{\sphinxbfcode{\sphinxupquote{KEYWORDS}}\sphinxbfcode{\sphinxupquote{ = {[}'const', 'int', 'void', 'if', 'else', 'while', 'main', 'return', 'printf', 'scanf'{]}}}}
-\end{fulllineitems}
-
-\index{REPLY (lexer.lexer.C0lexer 属性)@\spxentry{REPLY}\spxextra{lexer.lexer.C0lexer 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.REPLY}}\pysigline{\sphinxbfcode{\sphinxupquote{REPLY}}\sphinxbfcode{\sphinxupquote{ = ''}}}
-\end{fulllineitems}
-
-\index{RESULT (lexer.lexer.C0lexer 属性)@\spxentry{RESULT}\spxextra{lexer.lexer.C0lexer 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.RESULT}}\pysigline{\sphinxbfcode{\sphinxupquote{RESULT}}\sphinxbfcode{\sphinxupquote{ = {[}{]}}}}
-\end{fulllineitems}
-
-\index{SOURCE\_TEXT (lexer.lexer.C0lexer 属性)@\spxentry{SOURCE\_TEXT}\spxextra{lexer.lexer.C0lexer 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.SOURCE_TEXT}}\pysigline{\sphinxbfcode{\sphinxupquote{SOURCE\_TEXT}}\sphinxbfcode{\sphinxupquote{ = ''}}}
-\end{fulllineitems}
-
-\index{STATUS (lexer.lexer.C0lexer 属性)@\spxentry{STATUS}\spxextra{lexer.lexer.C0lexer 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.STATUS}}\pysigline{\sphinxbfcode{\sphinxupquote{STATUS}}\sphinxbfcode{\sphinxupquote{ = 0}}}
-\end{fulllineitems}
-
-\index{TOKEN (lexer.lexer.C0lexer 属性)@\spxentry{TOKEN}\spxextra{lexer.lexer.C0lexer 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.TOKEN}}\pysigline{\sphinxbfcode{\sphinxupquote{TOKEN}}\sphinxbfcode{\sphinxupquote{ = ''}}}
-\end{fulllineitems}
-
-\index{clearToken() (lexer.lexer.C0lexer 方法)@\spxentry{clearToken()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.clearToken}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{clearToken}}}{}{}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.clearToken}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{clearToken}}}{}{}
 清空目前已经读取的字符缓存
 
 \end{fulllineitems}
 
-\index{curChar() (lexer.lexer.C0lexer 方法)@\spxentry{curChar()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{curChar() (lexer.lexer.C0lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.curChar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{curChar}}}{}{}~\begin{description}
-\item[{char}] \leavevmode
-当前文件流指针指向的类型
-
-\end{description}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.curChar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{curChar}}}{}{}
+返回当前指针指向的字符
 
 \end{fulllineitems}
 
-\index{error() (lexer.lexer.C0lexer 方法)@\spxentry{error()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{isDigit() (lexer.lexer.C0lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.error}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{error}}}{}{}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.isDigit}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isDigit}}}{}{}
+判断当前字符是否为数字
+
 \end{fulllineitems}
 
-\index{getchar() (lexer.lexer.C0lexer 方法)@\spxentry{getchar()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{isLetter() (lexer.lexer.C0lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.getchar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{getchar}}}{}{}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.isLetter}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isLetter}}}{}{}
+判断当前字符为字母
+
 \end{fulllineitems}
 
-\index{getsym() (lexer.lexer.C0lexer 方法)@\spxentry{getsym()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{getchar() (lexer.lexer.C0lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.getsym}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{getsym}}}{}{}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.getchar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{getchar}}}{}{}
+将当前字符加入TOKEN末尾
+文件指针+1
+
 \end{fulllineitems}
 
-\index{isBigLpar() (lexer.lexer.C0lexer 方法)@\spxentry{isBigLpar()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{tobin() (lexer.lexer.C0lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isBigLpar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isBigLpar}}}{}{}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.tobin}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{tobin}}}{}{}
+十进制转二进制
+
 \end{fulllineitems}
 
-\index{isBigRpar() (lexer.lexer.C0lexer 方法)@\spxentry{isBigRpar()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{error() (lexer.lexer.C0lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isBigRpar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isBigRpar}}}{}{}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.error}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{error}}}{}{}
+出错提示
+
 \end{fulllineitems}
 
-\index{isColon() (lexer.lexer.C0lexer 方法)@\spxentry{isColon()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{word\_analyze() (lexer.lexer.C0lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isColon}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isColon}}}{}{}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.word_analyze}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{word\_analyze}}}{}{}
+自动词法分析至出错或到文件末尾
+
 \end{fulllineitems}
 
-\index{isComma() (lexer.lexer.C0lexer 方法)@\spxentry{isComma()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{web\_word\_analyze() (lexer.lexer.C0lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isComma}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isComma}}}{}{}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.web_word_analyze}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{web\_word\_analyze}}}{}{}
+用于服务器的词法分析接口
+
 \end{fulllineitems}
 
-\index{isDigit() (lexer.lexer.C0lexer 方法)@\spxentry{isDigit()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{output() (lexer.lexer.C0lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isDigit}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isDigit}}}{}{}
-\end{fulllineitems}
+\phantomsection\label{\detokenize{lexer/lexer:lexer.lexer.C0lexer.output}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{output}}}{}{}
+输出词法分析结果文件
 
-\index{isDiv() (lexer.lexer.C0lexer 方法)@\spxentry{isDiv()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isDiv}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isDiv}}}{}{}
-\end{fulllineitems}
-
-\index{isDot() (lexer.lexer.C0lexer 方法)@\spxentry{isDot()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isDot}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isDot}}}{}{}
-\end{fulllineitems}
-
-\index{isEqu() (lexer.lexer.C0lexer 方法)@\spxentry{isEqu()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isEqu}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isEqu}}}{}{}
-\end{fulllineitems}
-
-\index{isInvalidchar() (lexer.lexer.C0lexer 方法)@\spxentry{isInvalidchar()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isInvalidchar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isInvalidchar}}}{}{}
-\end{fulllineitems}
-
-\index{isKeyWord() (lexer.lexer.C0lexer 方法)@\spxentry{isKeyWord()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isKeyWord}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isKeyWord}}}{}{}
-\end{fulllineitems}
-
-\index{isLess() (lexer.lexer.C0lexer 方法)@\spxentry{isLess()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isLess}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isLess}}}{}{}
-\end{fulllineitems}
-
-\index{isLetter() (lexer.lexer.C0lexer 方法)@\spxentry{isLetter()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isLetter}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isLetter}}}{}{}
-\end{fulllineitems}
-
-\index{isLpar() (lexer.lexer.C0lexer 方法)@\spxentry{isLpar()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isLpar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isLpar}}}{}{}
-\end{fulllineitems}
-
-\index{isMark() (lexer.lexer.C0lexer 方法)@\spxentry{isMark()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isMark}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isMark}}}{}{}
-\end{fulllineitems}
-
-\index{isMinus() (lexer.lexer.C0lexer 方法)@\spxentry{isMinus()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isMinus}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isMinus}}}{}{}
-\end{fulllineitems}
-
-\index{isMore() (lexer.lexer.C0lexer 方法)@\spxentry{isMore()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isMore}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isMore}}}{}{}
-\end{fulllineitems}
-
-\index{isMult() (lexer.lexer.C0lexer 方法)@\spxentry{isMult()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isMult}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isMult}}}{}{}
-\end{fulllineitems}
-
-\index{isNewLine() (lexer.lexer.C0lexer 方法)@\spxentry{isNewLine()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isNewLine}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isNewLine}}}{}{}~\index{C0lexer.isNewLine() (在 lexer.lexer 模块中)@\spxentry{C0lexer.isNewLine()}\spxextra{在 lexer.lexer 模块中}}
-
-\begin{fulllineitems}
-\pysigline{\sphinxcode{\sphinxupquote{@}}\sphinxbfcode{\sphinxupquote{isNewLine}}}\pysigline{\sphinxbfcode{\sphinxupquote{判断当前字符是否为'/r'或者"/n"}}}
 \end{fulllineitems}
 
 
 \end{fulllineitems}
 
-\index{isPlus() (lexer.lexer.C0lexer 方法)@\spxentry{isPlus()}\spxextra{lexer.lexer.C0lexer 方法}}
+
+
+\section{算法优先文法分析器OPGA}
+\label{\detokenize{OPG/OPGA::doc}}\label{\detokenize{OPG/OPGA:opga}}
+
+\section{语法分析}
+\label{\detokenize{grammar_analysis/gramma::doc}}\label{\detokenize{grammar_analysis/gramma:id1}}\index{special\_lexer (grammar\_analysis.utils 中的类)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isPlus}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isPlus}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class }}\sphinxcode{\sphinxupquote{grammar\_analysis.utils.}}\sphinxbfcode{\sphinxupquote{special\_lexer}}}{\emph{INPUT\_FILE\_NAME='web'}}{}
+词法分析器,是C0lexer的子类
+\index{clearToken() (grammar\_analysis.utils.special\_lexer 方法)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.clearToken}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{clearToken}}}{}{}
+清空目前已经读取的字符缓存
+
 \end{fulllineitems}
 
-\index{isQuote() (lexer.lexer.C0lexer 方法)@\spxentry{isQuote()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{curChar() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isQuote}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isQuote}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.curChar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{curChar}}}{}{}
+返回当前指针指向的字符
+
 \end{fulllineitems}
 
-\index{isRpar() (lexer.lexer.C0lexer 方法)@\spxentry{isRpar()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{error() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isRpar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isRpar}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.error}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{error}}}{}{}
+出错提示
+
 \end{fulllineitems}
 
-\index{isSemi() (lexer.lexer.C0lexer 方法)@\spxentry{isSemi()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{error\_report() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isSemi}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isSemi}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.error_report}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{error\_report}}}{}{}
+错误分析报告
+
 \end{fulllineitems}
 
-\index{isSpace() (lexer.lexer.C0lexer 方法)@\spxentry{isSpace()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{getchar() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isSpace}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isSpace}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.getchar}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{getchar}}}{}{}
+将当前字符加入TOKEN末尾
+文件指针+1
+
+\end{fulllineitems}
+
+\index{isDigit() (grammar\_analysis.utils.special\_lexer 方法)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.isDigit}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isDigit}}}{}{}
+判断当前字符是否为数字
+
+\end{fulllineitems}
+
+\index{isLetter() (grammar\_analysis.utils.special\_lexer 方法)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.isLetter}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isLetter}}}{}{}
+判断当前字符为字母
+
+\end{fulllineitems}
+
+\index{isNewLine() (grammar\_analysis.utils.special\_lexer 方法)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.isNewLine}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isNewLine}}}{}{}
+\end{fulllineitems}
+
+\index{isSpace() (grammar\_analysis.utils.special\_lexer 方法)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.isSpace}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isSpace}}}{}{}
 判断当前字符是否为’/r’或者”/n”
 
 \end{fulllineitems}
 
-\index{isTab() (lexer.lexer.C0lexer 方法)@\spxentry{isTab()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{output() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isTab}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isTab}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.output}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{output}}}{}{}
+输出词法分析结果文件
+
 \end{fulllineitems}
 
-\index{isTrans() (lexer.lexer.C0lexer 方法)@\spxentry{isTrans()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{print\_result() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.isTrans}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{isTrans}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.print_result}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{print\_result}}}{}{}
+打印结果
+
 \end{fulllineitems}
 
-\index{output() (lexer.lexer.C0lexer 方法)@\spxentry{output()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{read() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.output}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{output}}}{}{}
-\end{fulllineitems}
-
-\index{p (lexer.lexer.C0lexer 属性)@\spxentry{p}\spxextra{lexer.lexer.C0lexer 属性}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.p}}\pysigline{\sphinxbfcode{\sphinxupquote{p}}\sphinxbfcode{\sphinxupquote{ = 0}}}
-\end{fulllineitems}
-
-\index{print\_result() (lexer.lexer.C0lexer 方法)@\spxentry{print\_result()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.print_result}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{print\_result}}}{}{}
-\end{fulllineitems}
-
-\index{read() (lexer.lexer.C0lexer 方法)@\spxentry{read()}\spxextra{lexer.lexer.C0lexer 方法}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.read}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{read}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.read}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{read}}}{}{}
 如果以文件形式输入，调用该函数执行读操作
 
 \end{fulllineitems}
 
-\index{web\_input() (lexer.lexer.C0lexer 方法)@\spxentry{web\_input()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{tobin() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.web_input}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{web\_input}}}{\emph{SOURCE\_TEXT}}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.tobin}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{tobin}}}{\emph{x: int}}{}
+十进制转二进制
+
+\end{fulllineitems}
+
+\index{web\_input() (grammar\_analysis.utils.special\_lexer 方法)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.web_input}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{web\_input}}}{\emph{SOURCE\_TEXT}}{}
 从表单输入文本
 
 \end{fulllineitems}
 
-\index{web\_reply() (lexer.lexer.C0lexer 方法)@\spxentry{web\_reply()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{web\_reply() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.web_reply}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{web\_reply}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.web_reply}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{web\_reply}}}{}{}
+用于服务器的分析应答接口
+
 \end{fulllineitems}
 
-\index{web\_word\_analyze() (lexer.lexer.C0lexer 方法)@\spxentry{web\_word\_analyze()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{web\_word\_analyze() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.web_word_analyze}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{web\_word\_analyze}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.web_word_analyze}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{web\_word\_analyze}}}{}{}
+用于服务器的词法分析接口
+
 \end{fulllineitems}
 
-\index{word\_analyze() (lexer.lexer.C0lexer 方法)@\spxentry{word\_analyze()}\spxextra{lexer.lexer.C0lexer 方法}}
+\index{word\_analyze() (grammar\_analysis.utils.special\_lexer 方法)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:lexer.lexer.C0lexer.word_analyze}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{word\_analyze}}}{}{}
+\phantomsection\label{\detokenize{grammar_analysis/gramma:grammar_analysis.utils.special_lexer.word_analyze}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{word\_analyze}}}{}{}
+自动词法分析至出错或到文件末尾
+
 \end{fulllineitems}
 
 
 \end{fulllineitems}
 
+
+
+\chapter{正在施工中的网站（欢迎蹂躏）}
+\label{\detokenize{index:id2}}
+visit \sphinxhref{http://www.buaatech.top:8080/lexer/}{Tarpe酋长金坷垃C0编译器}
 
 
 \renewcommand{\indexname}{Python 模块索引}
 \begin{sphinxtheindex}
-\let\bigletter\sphinxstyleindexlettergroup
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
 \bigletter{l}
-\item\relax\sphinxstyleindexentry{lexer.lexer}\sphinxstyleindexpageref{index:\detokenize{module-lexer.lexer}}
-\item\relax\sphinxstyleindexentry{lexer.models}\sphinxstyleindexpageref{index:\detokenize{module-lexer.models}}
-\item\relax\sphinxstyleindexentry{lexer.views}\sphinxstyleindexpageref{index:\detokenize{module-lexer.views}}
+\item {\sphinxstyleindexentry{lexer.views}}\sphinxstyleindexpageref{lexer/views:\detokenize{module-lexer.views}}
 \end{sphinxtheindex}
 
 \renewcommand{\indexname}{索引}
