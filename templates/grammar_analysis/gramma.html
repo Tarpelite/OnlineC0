@@ -12,7 +12,8 @@
         <div class="row clearfix">
             <div class="col-md-12 column">
                 <h3>
-                    金坷垃C0编译器<small>Tarpe酋长</small>
+                    金坷垃C0编译器<small><a class="btn" href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=523619372&website=www.oicqzone.com">Tarpe酋长</a></small>
+                    
                 </h3>
                 <ul class="nav nav-list"><li class="divider"></li></ul>
                 <h5>施工进度：</h5>
@@ -67,6 +68,7 @@
 
             <div class="col-md-6 column">
                 <div class="table-responsive">
+                {% if 表格1 %}
                     <table class="table table-striped">
                     <caption>变量表</caption>
                     <thead>
@@ -79,8 +81,12 @@
                         </tr>
                         {{ 表格1 }}
                     </table>
+                {% else %}
+                    <strong> 分析结果: （您还未输入测试代码）</strong>
+                {% endif %}
                 </div>
                 <div class="table-responsive">
+                {% if 表格2 %}
                     <table class="table table-striped">
                     <caption>常量表</caption>
                     <thead>
@@ -90,8 +96,11 @@
                         </tr>
                         {{ 表格2 }}
                     </table>
+                {% else %}
+                {% endif %}
                 </div>
                 <div class="table-responsive">
+                {%  if 表格3 %}
                     <table class="table table-striped">
                     <caption>Pcode</caption>
                     <thead>
@@ -104,8 +113,11 @@
                         </tr>
                         {{ 表格3 }}
                     </table>
+                {% else %}
+                {% endif %}
                 </div>
                 <div class="table-responsive">
+                {% if 表格4 %}
                     <table class="table table-striped">
                     <caption>错误信息</caption>
                     <thead>
@@ -114,6 +126,8 @@
                         </tr>
                         {{ 表格4 }}
                     </table>
+                {% else %}
+                {% endif %}
                 </div>
             </div>
         </div>

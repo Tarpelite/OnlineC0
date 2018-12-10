@@ -5,21 +5,17 @@ import os
 class C0lexer:
     """
     """
-    TOKEN = ""
-    INPUT_FILE_NAME = "" 
-    SOURCE_TEXT = ""
-    RESULT = []
-    STATUS = 0
-    REPLY = ""
-    KEYWORDS = ["const", "int", "void", "if", "else",
-                "while", "main", "return", "printf", "scanf"]
-    p = 0
-
     def __init__(self, INPUT_FILE_NAME: str):
         '''
         '''
+        self.TOKEN = ""
         self.INPUT_FILE_NAME = INPUT_FILE_NAME
+        self.SOURCE_TEXT = ""
         self.p = 0
+        self.RESULT = []
+        self.REPLY = ""
+        self.KEYWORDS = ["const", "int", "void", "if", "else",
+                "while", "main", "return", "printf", "scanf"]
     
     def web_input(self, SOURCE_TEXT):
         '''
@@ -382,6 +378,7 @@ class C0lexer:
             用于服务器的词法分析接口
         '''
         length = len(self.SOURCE_TEXT)
+        self.RESULT = []
         while self.p < length and self.getsym():
             continue
         if self.p >= length:

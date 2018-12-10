@@ -12,7 +12,8 @@
         <div class="row clearfix">
             <div class="col-md-12 column">
                 <h3>
-                    金坷垃C0编译器<small>Tarpe酋长</small>
+                    金坷垃C0编译器<small><a class="btn" href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=523619372&website=www.oicqzone.com">Tarpe酋长</a></small>
+                    
                 </h3>
                 <ul class="nav nav-list"><li class="divider"></li></ul>
                 <h5>施工进度：</h5>
@@ -120,6 +121,7 @@
             </div>
 
             <div class="col-md-6 column">
+            {% if 表格1 %}
                 <div class="table-responsive">
                    {{ 表格1 }}
                 </div>
@@ -138,6 +140,9 @@
                 <div class="table-responsive">
                     {{ 表格6 }}
                 </div>
+            {% else %}
+                <strong>分析结果：(您还未正确输入测试文法和测试代码!)</strong>
+            {% endif %}
             </div>
         </div>
     </div>

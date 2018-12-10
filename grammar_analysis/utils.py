@@ -7,6 +7,7 @@ class special_lexer(C0lexer):
         '''
             lexer的初始化
         '''
+        C0lexer.__init__(self, INPUT_FILE_NAME)
         self.INPUT_FILE_NAME = INPUT_FILE_NAME
         self.p = 0
         self.line_cnt = 0
@@ -173,6 +174,8 @@ class special_lexer(C0lexer):
             self._error()
         self.word_cnt += 1
         self.RESULT.append(res)
+        if len(res) < 3:
+            return False
         self.REPLY += "[" + str(res[2]) + ", " + str(res[3]) + "]\n"
         return True
 
@@ -208,6 +211,9 @@ class special_lexer(C0lexer):
         with open(OUTPUT_FILE_NAME, "w+") as f:
             f.write(str(length)+"\n")
             for res in self.RESULT:
+                if len(res) == 2:
+                    res.append("error")
+                    res.append("error")
                 line = str(res[0]) + " " + str(res[1]) + " " + str(res[2]) + " " + str(res[3])+"\n"
                 line = line.encode("utf-8")
                 f.write(str(res[0]) + " " + str(res[1]) + " " + str(res[2]) + " " + str(res[3])+"\n")
@@ -1482,7 +1488,7 @@ class norm_C0_compiler():
 if __name__ == "__main__":
     #  debugging and test_case
     
-    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test3.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test5.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     #lexer.print_result()

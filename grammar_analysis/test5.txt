@@ -2,7 +2,7 @@ const a = 1, b = 2;
 int c, d;
 int main()
 {
-    f = 2;
+    f =? 2;
     scanf(d);
     if ( c>1 )
     {
