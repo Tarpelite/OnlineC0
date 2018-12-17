@@ -6,7 +6,7 @@
     "port": 6000,
     "secure": false,
     "protocol": "sftp",
-    "uploadOnSave": true,
+    "uploadOnSave": false,
     "passive": false,
     "debug": false,
     "privateKeyPath": null,

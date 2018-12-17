@@ -1,4 +1,4 @@
-from .lexer import C0lexer  
+from lexer import C0lexer  
 import os
 
 
