@@ -1,4 +1,4 @@
-from .utils import special_lexer, norm_C0_compiler
+from utils import special_lexer, norm_C0_compiler
 import os
 class Interpreter():
     def __init__(self, display_table:list, Pcode_list:list , input_stream=""):
@@ -232,8 +232,7 @@ class Interpreter():
                 end = i
                 break
         if not flag:
-            self._error("主程序没有返回")
-            return False
+            end = len(self.Pcode)
         self.code_p = sta + 1
         while(self.code_p != end):
             code = self.Pcode[self.code_p]
@@ -250,7 +249,7 @@ class Interpreter():
             exec(cmd)
 
 if __name__ == "__main__":
-    FILE_NAME = "/home/tarpe/shared/OnlineC0/OnlineC0/grammar_analysis/test5.txt"
+    FILE_NAME = "C0_TEST3.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     #lexer.print_result()

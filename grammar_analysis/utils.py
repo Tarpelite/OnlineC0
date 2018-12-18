@@ -1,4 +1,4 @@
-from .lexer import C0lexer  
+from lexer import C0lexer  
 import os
 
 
@@ -85,27 +85,14 @@ class special_lexer(C0lexer):
                     self.getchar()
                 res.extend(['整数', self.TOKEN])
         elif self.isMinus():
-            flag = 0
             self.getchar()
-            while self.isDigit():
-                if flag == 0:
-                    flag = 1
-                self.getchar()
-            if flag == 0:
-                res.extend(['-', '-'])
-            else:
-                res.extend(['整数', int(self.TOKEN)])
+            res.extend(['-', '-'])
+
         elif self.isPlus():
             flag = 0
             self.getchar()
-            while self.isDigit():
-                if flag == 0:
-                    flag = 1
-                self.getchar()
-            if flag == 0:
-                res.extend(['+',  '+'])
-            else:
-                res.extend(['整数', int(self.TOKEN)])
+            res.extend(['+',  '+'])
+
         elif self.isQuote():
             flag = 0
             self.p += 1
@@ -353,6 +340,17 @@ class norm_C0_compiler():
         '''
             在display区查找一个变量
         '''
+        if type(name) == int:
+            return "error"
+        if name == 'ret_addr':
+            return 'error'
+        siz = len(self.display)
+        for i in range(siz-1, -1, -1):
+            record = self.display[i]
+            if record[0] == name:
+                return i
+        return "error"
+        '''
         cur_lev = self.cur_lev
         i = 0
         for record in self.display:
@@ -366,7 +364,7 @@ class norm_C0_compiler():
                     i += 1
             else:
                 i += 1
-        return "error"
+        '''
    
     def _lookup_abp(self, lev, name):
         '''
@@ -627,10 +625,17 @@ class norm_C0_compiler():
         '''
         #   find return address
         record = []
+        siz = len(self.display)
+        for i in range(siz-1, -1, -1):
+            record  = self.display[i]
+            if record[0] == 'ret_addr':
+                break
+        '''
         for word in self.display:
             if word[0] == 'ret_addr' and word[4] == self.cur_lev:
                 record = word
                 break
+        '''
         if len(record) == 0:
             return False
         addr = record[3]
@@ -669,12 +674,20 @@ class norm_C0_compiler():
         code = ["DIS", 3, x, y]
         self._gen_Pcode(code)
         i = -1
+        siz = len(self.display)
+        for j in range(siz-1, -1, -1):
+            record = self.display[j]
+            if record[0] == 'ret_addr':
+                i = record[3] + 1
+                break
+        '''
         for word in self.display:
             lev = word[4]
             name = word[0]
             if lev == self.cur_lev and name == 'ret_addr':
                 i = word[3] + 1
                 break
+        '''
         if i == -1:
             return False
         pre_lev = self.display[i][0]
@@ -1204,7 +1217,7 @@ class norm_C0_compiler():
         self._getword()
         wd = self._curword()
         if wd[2] != '关键字' or wd[3] != 'MAIN':
-            self._error("应为main")
+            #self._error("应为main")
             return False
         code = ["main:", "", "", ""]
         self._gen_Pcode(code)
@@ -1317,7 +1330,7 @@ class norm_C0_compiler():
             self._getword()
             wd = self._curword()
             if wd[2] != '标识符':
-                self._error("应为标识符")
+                #self._error("应为标识符")
                 return False
             name = wd[3]
             self._getword()
@@ -1505,7 +1518,7 @@ class norm_C0_compiler():
 if __name__ == "__main__":
     #  debugging and test_case
     
-    FILE_NAME = "/home/tarpe/shared/OnlineC0/grammar_analysis/test5.txt"
+    FILE_NAME = "C:\\编译课程设计\\OnlineC0\\test\\C0\\C0_TEST1.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     #lexer.print_result()
