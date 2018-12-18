@@ -32,20 +32,8 @@ class special_lexer(C0lexer):
         '''
           判断是否是一个新的行
         '''
-        if self.curChar() == '\r':
-            self.getchar()
-            if self.curChar() == '\n' or self.curChar() == '\r':
-                return True
-            else:
-                self._retract()
-                return True
-        elif self.curChar() == '\n':
-            self.getchar()
-            if self.curChar() == '\n' or self.curChar() == '\r':
-                return True
-            else:
-                self._retract()
-                return True 
+        if self.curChar() == '\n':
+            return True 
         else:
             return False
     
@@ -261,6 +249,7 @@ class norm_C0_compiler():
         #   记录上一层的计数
         self.is_main = False
         #   只有从main函数开始才输出Pcode
+        self.bitmap = [ ]
         
     def _getword(self):
         '''
@@ -348,6 +337,8 @@ class norm_C0_compiler():
         for i in range(siz-1, -1, -1):
             record = self.display[i]
             if record[0] == name:
+                if record[4] != self.cur_lev or record[4] != 1:
+                    return "error"
                 return i
         return "error"
         '''
@@ -535,6 +526,44 @@ class norm_C0_compiler():
                 word = list(str(f.readline()).strip().split(" "))
                 self.words.append(word)
         f.close()
+    
+    def parantheis_matching(self):
+        '''
+            错误局部化处理之一——括号匹配
+        '''
+        siz = len(self.words)
+        self.bitmap = [0 for x in range(siz)]
+        cnt = 0
+        stack = []
+        i = 0
+        siz = len(self.words)
+        for word in self.words:
+            if word[2] == '专用符号' and word[3] == '(':
+                stack.append(word)
+                cnt += 1
+                self.bitmap[i] = cnt
+            elif word[2] == '专用符号' and word[3] == ')':
+                left_par = stack.pop()
+                self.bitmap[i] = cnt
+                cnt -= 1
+                if cnt < 0 or left_par[3] != '(':
+                    self.error_msg_box.append("第"+str(word[0]) + "行')'无匹配")
+                    return False
+            elif word[2] == '专用符号' and word[3] == '{':
+                stack.append(word)
+                cnt += 1
+                self.bitmap[i] = cnt
+            elif word[2] == '专用符号' and word[3] == '}':
+                left_par = stack.pop()
+                self.bitmap[i] = cnt
+                cnt -= 1
+                if cnt <0 or left_par[3] != '{':
+                    self.error_msg_box.append("第" + str(word[0]) + "行’}‘无匹配")
+                    return True
+            else:
+                self.bitmap[i] = cnt
+            i += 1
+        return True
 
     def _error(self, hint: str):
         '''
@@ -543,6 +572,14 @@ class norm_C0_compiler():
         wd = self._curword()
         msg = "line: " + str(wd[0]) + " "+ hint 
         self.error_msg_box.append(msg)
+        wd = self._curword()
+        cnt = self.bitmap[self.words_p]
+        while self.words_p< len(self.words) and self.bitmap[self.words_p] == cnt:
+            if(wd[2] == '专用符号' and wd[3] == ';') or (wd[2]== '关键字' and wd[3] == 'ELSE'):
+                break
+            else:
+                self._getword()
+                wd = self._curword() 
     
     def s_read(self):
         '''
@@ -943,7 +980,7 @@ class norm_C0_compiler():
             self._getword()
             res = self.s_statement()
             target = len(self.code)
-            JMP_code = ["JMP", 10, "", target+1]
+            JMP_code = ["JMP", 10, "", target]
             if not self._zipper_fill(JMP_id + 1, JMP_code):
                 return False
             if not res:
@@ -1497,6 +1534,12 @@ class norm_C0_compiler():
                     p0 = self.words_p
                     if not res:
                         return False
+        elif wd[2] == '关键字' and wd[3] == 'VOID':
+            p0 = self.words
+            wd = self._curword()
+            res = self.s_function_declaration()
+            if res:
+                flag = 1
         while flag == 1:
             p0 = self.words_p
             res = self.s_function_declaration()

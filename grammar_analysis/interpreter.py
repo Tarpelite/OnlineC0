@@ -86,7 +86,7 @@ class Interpreter():
     
     def _EXF(self, x,y):
         self.code_p = self.run_p_stack[-1]
-        self.run_p_stack = self.run_p_stack[:-1]
+        #self.run_p_stack = self.run_p_stack[:-1]
         self.code_p += 1
     
     def _STO(self, x,y):
@@ -249,7 +249,7 @@ class Interpreter():
             exec(cmd)
 
 if __name__ == "__main__":
-    FILE_NAME = "C0_TEST3.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/OnlineC0/C0_TEST5.TXT"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     #lexer.print_result()
@@ -262,18 +262,22 @@ if __name__ == "__main__":
     compiler.error_msg_box = errors
     #compiler.read(input_file_name)
     compiler.words = words
-    #print(compiler.words)
-    compiler.s_program()
-    compiler.report_result()
+    matched = compiler.parantheis_matching()
+    if not matched:
+        compiler.report_result()
+    else:
+        #print(compiler.words)
+        compiler.s_program()
+        compiler.report_result()
 
-    display_table = compiler.display
-    Pcode = compiler.code
+        display_table = compiler.display
+        Pcode = compiler.code
 
-    input_stream = "3"
-    interpreter = Interpreter(display_table, Pcode, input_stream=input_stream)
-    interpreter.main()
-    print("执行结果：")
-    print(interpreter.res)
+        input_stream = "1 3"
+        interpreter = Interpreter(display_table, Pcode, input_stream=input_stream)
+        interpreter.main()
+        print("执行结果：")
+        print(interpreter.res)
 
 
 
