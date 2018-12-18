@@ -13,7 +13,7 @@ int sub(int k, int s)
 int main()
 {
     int c;
-    c = add(a, b);
-    printf("%d",c);
+    c = sub(a, b);
+    printf(c);
     return;
 }

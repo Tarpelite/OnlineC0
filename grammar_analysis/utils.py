@@ -1,4 +1,4 @@
-from lexer import C0lexer  
+from .lexer import C0lexer  
 import os
 
 
@@ -593,7 +593,14 @@ class norm_C0_compiler():
         self._getword()
         wd = self._curword()
         if wd[2] == '字符串':
-            #   由于Pcode没有具体处理字符串的方法，所以简化为一条指令
+            #   由于Pcode没有具体处理字符串的方法，所以增添LDS指令
+            name = wd[3]
+            self._insert_display(name, 'str', name, None, self.cur_lev)
+            i = self._lookup_variable(name)
+            lev = self.display[i][-1]
+            y = self.display[i][-2]
+            code = ["LDS", 101, lev, y]
+            self._gen_Pcode(code)
             code = ["WRS", 28, "", 1]
             self._gen_Pcode(code)
             self._getword()
@@ -626,7 +633,7 @@ class norm_C0_compiler():
                 break
         if len(record) == 0:
             return False
-        addr = record[3] + 1
+        addr = record[3]
         lev = record[4]
         self._getword()
         wd = self._curword()
@@ -713,8 +720,9 @@ class norm_C0_compiler():
         record = self.display[display_index]
         val = record[2]
         base_addr = record[3]
+        record = self.display[display_index+1]
         lev = record[4]
-        i = 1
+        i = 0
         cnt = 0
         if val == 0:
             return True
@@ -922,7 +930,7 @@ class norm_C0_compiler():
             self._getword()
             res = self.s_statement()
             target = len(self.code)
-            JMP_code = ["JMP", 10, "", target]
+            JMP_code = ["JMP", 10, "", target+1]
             if not self._zipper_fill(JMP_id + 1, JMP_code):
                 return False
             if not res:
@@ -1092,10 +1100,11 @@ class norm_C0_compiler():
                 if i == "error":
                     self._error("未定义")
                     return False
+                i= i+1
                 record = self.display[i]
                 lev = record[4]
                 x = lev
-                y = self.display[i+1][3]
+                y = self.display[i][3]
                 code = ["LOD", 1, x, y]
                 self._gen_Pcode(code)
                 return True

@@ -6,7 +6,7 @@ int main()
     scanf(d);
     if ( c>1 )
     {
-        printf("%d", a);
+        printf(a);
         if ( d > 0)
         {
             printf(d);

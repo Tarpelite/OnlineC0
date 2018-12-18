@@ -1,7 +1,7 @@
-from utils import special_lexer, norm_C0_compiler
+from .utils import special_lexer, norm_C0_compiler
 import os
 class Interpreter():
-    def __init__(self, display_table:list, Pcode_list:list):
+    def __init__(self, display_table:list, Pcode_list:list , input_stream=""):
         self.display_table = display_table
         self.Pcode = Pcode_list
         self.code_p = 0
@@ -12,6 +12,7 @@ class Interpreter():
         self.run_p_stack = []
         self.res = ""
         self.error_msg_box = []
+        self.input_stream = input_stream
 
     
     def _search_table(self, x, y):
@@ -45,20 +46,23 @@ class Interpreter():
         self.code_p += 1
     
     def _JMP(self, x, y):
-        self.code_p = x
+        self.code_p = y
     
     def _JPC(self,x, y):
         val = self._pop_stack()
         if val <= 0:
             self.code_p = y
+        else:
+            self.code_p += 1
     
     def _MKS(self,x, y):
+        self.code_p += 1
+        pass
+    
+    def _CAL(self,x, y):
         self.run_stack.append(self.stack)
         self.run_p_stack.append(self.code_p)
-        self.code_p += 1
-    
-    def _CALL(self,x, y):
-        self.code_p = x
+        self.code_p = y
         self.code_p += 1
     
     def _LDC(self,x, y):
@@ -72,28 +76,24 @@ class Interpreter():
     
     def _WRW(self,x,y):
         val = self._pop_stack()
-        self.res += val + "\n"
+        self.res += str(val) + "\n"
         self.code_p += 1
     
     def _EXP(self, x,y):
-        self.stack = self.run_stack[-1]
-        self.run_stack = self.run_stack[:-1]
         self.code_p = self.run_p_stack[-1]
         self.run_p_stack = self.run_p_stack[:-1]
         self.code_p += 1
     
     def _EXF(self, x,y):
-        self.stack = self.run_stack[-1]
-        self.run_stack = self.run_stack[:-1]
         self.code_p = self.run_p_stack[-1]
         self.run_p_stack = self.run_p_stack[:-1]
         self.code_p += 1
     
     def _STO(self, x,y):
+        val = self._pop_stack()
         addr = self._pop_stack()
         x = addr[0]
         y = addr[1]
-        val = self._pop_stack()
         for i in range(len(self.display_table)):
             if self.display_table[i][4] == x and self.display_table[i][3] == y:
                 self.display_table[i][2] = val
@@ -116,6 +116,22 @@ class Interpreter():
             self._push_stack(1)
         else:
             self._push_stack(0)
+        self.code_p += 1
+    
+    def _RED(self, x, y):
+        token = ""
+        i = 0
+        while i < len(self.input_stream) and self.input_stream[i] != ' ':
+            token += self.input_stream[i]
+            i+=1
+        val = int(token)
+        addr = self._pop_stack()
+        x = addr[0]
+        y = addr[1]
+        for i in range(len(self.display_table)):
+            if self.display_table[i][4] == x and self.display_table[i][3] == y:
+                self.display_table[i][2] = val
+                break
         self.code_p += 1
     
     def _LSS(self, x, y):
@@ -182,6 +198,18 @@ class Interpreter():
         self._push_stack(res)
         self.code_p += 1
     
+    def _LDS(self, x, y):
+        res = ""
+        for i in range(len(self.display_table)):
+            if self.display_table[i][4] == x and self.display_table[i][3] == y:
+                res = self.display_table[i][2]
+                break
+        self._push_stack(res)
+        self.code_p += 1
+
+
+
+    
     def _error(self, s):
         self.error_msg_box.append(s)
     
@@ -189,7 +217,7 @@ class Interpreter():
         flag = False
         for i in range(len(self.Pcode)):
             record = self.Pcode[i]
-            if record[0] == "main:":
+            if record[1] == "main:":
                 flag = True
                 sta = i
                 break
@@ -199,9 +227,10 @@ class Interpreter():
         flag = False
         for i in range(sta + 1, len(self.Pcode)):
             record = self.Pcode[i]
-            if record[0] == "EXP" or record[0] == "EXF":
+            if record[1] == "EXP" or record[0] == "EXF":
                 flag = True
                 end = i
+                break
         if not flag:
             self._error("主程序没有返回")
             return False
@@ -209,11 +238,19 @@ class Interpreter():
         while(self.code_p != end):
             code = self.Pcode[self.code_p]
             cmd = "self._"
-            cmd += code[0] + "(" + str(code[2]) + "," + str(code[3]) + ")"
+            if code[3] == '':
+                x = '0'
+            else:
+                x = code[3]
+            if code[4] == '':
+                y = '0'
+            else:
+                y = code[4]
+            cmd += code[1] + "(" + str(x) + "," + str(y) + ")"
             exec(cmd)
 
 if __name__ == "__main__":
-    FILE_NAME = "D:\北航学习\大三上\编译原理课程设计\OnlineC0\grammar_analysis\\test3.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/OnlineC0/grammar_analysis/test5.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     #lexer.print_result()
@@ -221,7 +258,7 @@ if __name__ == "__main__":
     errors = lexer.error_message_box
     words = lexer.RESULT
 
-    input_file_name = "/home/tarpe/shared/OnlineC0/test5wout.txt"
+    input_file_name = "/home/tarpe/shared/OnlineC0/test2wout.txt"
     compiler = norm_C0_compiler()
     compiler.error_msg_box = errors
     #compiler.read(input_file_name)
@@ -233,8 +270,10 @@ if __name__ == "__main__":
     display_table = compiler.display
     Pcode = compiler.code
 
-    interpreter = Interpreter(display_table, Pcode)
+    input_stream = "3"
+    interpreter = Interpreter(display_table, Pcode, input_stream=input_stream)
     interpreter.main()
+    print("执行结果：")
     print(interpreter.res)
 
 
