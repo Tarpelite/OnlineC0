@@ -71,12 +71,12 @@ class Interpreter():
     
     def _WRS(self,x,y):
         val = self._pop_stack()
-        self.res += val + "\n"
+        self.res += val 
         self.code_p += 1
     
     def _WRW(self,x,y):
         val = self._pop_stack()
-        self.res += str(val) + "\n"
+        self.res += str(val) 
         self.code_p += 1
     
     def _EXP(self, x,y):
@@ -124,6 +124,12 @@ class Interpreter():
         while i < len(self.input_stream) and self.input_stream[i] != ' ':
             token += self.input_stream[i]
             i+=1
+        i += 1
+        res = ""
+        while i < len(self.input_stream):
+            res += self.input_stream[i]
+            i += 1
+        self.input_stream = res 
         val = int(token)
         addr = self._pop_stack()
         x = addr[0]
