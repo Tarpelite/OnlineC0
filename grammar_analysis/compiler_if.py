@@ -15,6 +15,7 @@ class Compiler():
         self.lev_cnt = 1
         self.display = []
         self.const = []
+        self.zipper_cnt = 0
     
     def _getword(self):
         '''
@@ -757,19 +758,38 @@ class Compiler():
                 else:
                     self._getword()
                     #self._code_push(self.code)
-                    code_tag1 = len(self.code)
+                    self.zipper_cnt += 1
+                    self._gen_Pcode(["JPC", 11, self.zipper_cnt, None])
+                    #code_tag1 = len(self.code)
                     else_exist = False
                     self.s_clause()
                     wd = self._curword()
-                    code_tag2 = len(self.code)
+                    #code_tag2 = len(self.code)
+                    tag1 = len(self.code)
                     if wd[2] == '关键字' and wd[3] == 'ELSE':
+                        self.zipper_cnt += 1
+                        self._gen_Pcode(["JMP", 10, self.zipper_cnt, None])
+                        tag1 = len(self.code)
                         else_exist = True
                         self._getword()
                         self.s_clause()
-                        code_tag3 = len(self.code)
+                        #code_tag3 = len(self.code)
                         #self._code_push(self.code)
+                        for i in range(len(self.code)):
+                            if self.code[i][1] == "JMP" and self.code[i][-2] == self.zipper_cnt:
+                                self.code[i][-2] = ""
+                                self.code[i][-1] = len(self.code)
+                                self.zipper_cnt -= 1
+                                break
                     else:
                         pass
+                    for i in range(len(self.code)):
+                            if self.code[i][1] == "JPC" and self.code[i][-2] == self.zipper_cnt:
+                                self.code[i][-2] = ""
+                                self.code[i][-1] = tag1
+                                self.zipper_cnt -= 1
+                                break
+                    '''
                     if not else_exist:
                         code_pre = self.code[:code_tag1]
                         code_suf = self.code[code_tag1:]
@@ -796,7 +816,7 @@ class Compiler():
                         code_tag3 += 1
                         self._gen_Pcode(["JMP", 10, "", code_tag3])
                         self.code.extend(code_suf)
-
+                    '''
 
 
 
@@ -850,10 +870,19 @@ class Compiler():
                 if wd[2] != '专用符号' or wd[3] != ')':
                     self._error("缺少)")
                 else:
-                    code_tag1 = len(self.code)
+                    self.zipper_cnt += 1
+                    self._gen_Pcode(["JPC", 11, self.zipper_cnt, None])
+                    #code_tag1 = len(self.code)
                     self._getword()
                     self.s_clause()
                     self._gen_Pcode(jmp_back_code)
+                    for i in range(len(self.code)):
+                        if self.code[i][-2] == self.zipper_cnt and self.code[i][1] == "JPC":
+                            self.code[i][-1] = len(self.code)
+                            self.code[i][-2] = ""
+                            self.zipper_cnt -= 1
+                            break
+                    '''
                     code_tag2 = len(self.code)
                     code_pre = self.code[:code_tag1]
                     code_suf = self.code[code_tag1:]
@@ -863,7 +892,7 @@ class Compiler():
                     code_tag2 += 1
                     self._gen_Pcode(["JPC", 11, "",code_tag2])
                     self.code.extend(code_suf)
-
+                    '''
     
     def s_call(self):
         '''
@@ -1113,7 +1142,7 @@ class Compiler():
     
 
 if __name__ == "__main__":
-    FILE_NAME = "test3.TXT"
+    FILE_NAME = "C0_TEST5.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     #lexer.print_result()
@@ -1127,7 +1156,7 @@ if __name__ == "__main__":
         exit()
     display_table = compiler.display
     Pcode = compiler.code
-    input_stream = "-1"
+    input_stream = "5 4"
     interpreter = Interpreter(display_table, Pcode, input_stream=input_stream)
     interpreter.main()
     print("执行结果：")

@@ -86,7 +86,7 @@ class Interpreter():
     
     def _EXF(self, x,y):
         self.code_p = self.run_p_stack[-1]
-        #self.run_p_stack = self.run_p_stack[:-1]
+        self.run_p_stack = self.run_p_stack[:-1]
         self.code_p += 1
     
     def _STO(self, x,y):
@@ -233,12 +233,13 @@ class Interpreter():
         flag = False
         for i in range(sta + 1, len(self.Pcode)):
             record = self.Pcode[i]
-            if record[1] == "EXP" or record[0] == "EXF":
+            if record[1] == "EXP" or record[1] == "EXF":
                 flag = True
                 end = i
                 break
         if not flag:
             end = len(self.Pcode)
+        #self.run_p_stack.append(end-1)
         self.code_p = sta + 1
         while(self.code_p != end):
             code = self.Pcode[self.code_p]
