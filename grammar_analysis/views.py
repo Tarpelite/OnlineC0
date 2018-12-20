@@ -6,7 +6,8 @@ from django.contrib import messages
 from django.utils.safestring import mark_safe
 
 from .lexer import C0lexer
-from .utils import special_lexer, norm_C0_compiler
+from .utils import special_lexer
+from .compiler import Compiler
 from .interpreter import Interpreter
 # Create your views here.
 
@@ -15,7 +16,7 @@ def compile(request):
     context['title'] = "gramma_response"
     if request.POST:
         lexer = special_lexer()
-        compiler = norm_C0_compiler()
+        compiler = Compiler()
         test_file = request.FILES.get('test_file')
         code = request.POST['code']
         stream = request.POST['stream']
