@@ -63,20 +63,8 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">          判断是否是一个新的行</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curChar</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curChar</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">curChar</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_retract</span><span class="p">()</span>
-                <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">curChar</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curChar</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">curChar</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_retract</span><span class="p">()</span>
-                <span class="k">return</span> <span class="kc">True</span> 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curChar</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span> 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span></div>
     
@@ -116,27 +104,14 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
                 <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;整数&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">])</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isMinus</span><span class="p">():</span>
-            <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">isDigit</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;整数&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)])</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">])</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isPlus</span><span class="p">():</span>
             <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">isDigit</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">getchar</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;+&#39;</span><span class="p">,</span>  <span class="s1">&#39;+&#39;</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;整数&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN</span><span class="p">)])</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;+&#39;</span><span class="p">,</span>  <span class="s1">&#39;+&#39;</span><span class="p">])</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isQuote</span><span class="p">():</span>
             <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -305,6 +280,7 @@
         <span class="c1">#   记录上一层的计数</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_main</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1">#   只有从main函数开始才输出Pcode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bitmap</span> <span class="o">=</span> <span class="p">[</span> <span class="p">]</span>
         
 <div class="viewcode-block" id="norm_C0_compiler._getword"><a class="viewcode-back" href="../../grammar_analysis/compiler.html#grammar_analysis.utils.norm_C0_compiler._getword">[文档]</a>    <span class="k">def</span> <span class="nf">_getword</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -384,20 +360,33 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            在display区查找一个变量</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">cur_lev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_lev</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span> <span class="ow">and</span> <span class="n">record</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="n">cur_lev</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;error&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ret_addr&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;error&#39;</span>
+        <span class="n">siz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">siz</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">record</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_lev</span> <span class="ow">or</span> <span class="n">record</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="s2">&quot;error&quot;</span>
                 <span class="k">return</span> <span class="n">i</span>
-            <span class="k">elif</span> <span class="n">record</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="n">cur_lev</span> <span class="ow">and</span> <span class="n">record</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;abp&#39;</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lookup_abp</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">res</span> <span class="o">!=</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">res</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="s2">&quot;error&quot;</span></div>
+        <span class="k">return</span> <span class="s2">&quot;error&quot;</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        cur_lev = self.cur_lev</span>
+<span class="sd">        i = 0</span>
+<span class="sd">        for record in self.display:</span>
+<span class="sd">            if record[0] == name and record[4] == cur_lev:</span>
+<span class="sd">                return i</span>
+<span class="sd">            elif record[4] == cur_lev and record[1] == &#39;abp&#39;:</span>
+<span class="sd">                res = self._lookup_abp(record[0], name)</span>
+<span class="sd">                if res != &quot;error&quot;:</span>
+<span class="sd">                    return res</span>
+<span class="sd">                else:</span>
+<span class="sd">                    i += 1</span>
+<span class="sd">            else:</span>
+<span class="sd">                i += 1</span>
+<span class="sd">        &#39;&#39;&#39;</span></div>
    
 <div class="viewcode-block" id="norm_C0_compiler._lookup_abp"><a class="viewcode-back" href="../../grammar_analysis/compiler.html#grammar_analysis.utils.norm_C0_compiler._lookup_abp">[文档]</a>    <span class="k">def</span> <span class="nf">_lookup_abp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lev</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -568,6 +557,44 @@
                 <span class="n">word</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="norm_C0_compiler.parantheis_matching"><a class="viewcode-back" href="../../grammar_analysis/compiler.html#grammar_analysis.utils.norm_C0_compiler.parantheis_matching">[文档]</a>    <span class="k">def</span> <span class="nf">parantheis_matching</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            错误局部化处理之一——括号匹配</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">siz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bitmap</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">siz</span><span class="p">)]</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">siz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">word</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;专用符号&#39;</span> <span class="ow">and</span> <span class="n">word</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;(&#39;</span><span class="p">:</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+                <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bitmap</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cnt</span>
+            <span class="k">elif</span> <span class="n">word</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;专用符号&#39;</span> <span class="ow">and</span> <span class="n">word</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;)&#39;</span><span class="p">:</span>
+                <span class="n">left_par</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bitmap</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cnt</span>
+                <span class="n">cnt</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">left_par</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;(&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">error_msg_box</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;第&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">word</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;行&#39;)&#39;无匹配&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">word</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;专用符号&#39;</span> <span class="ow">and</span> <span class="n">word</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;{&#39;</span><span class="p">:</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+                <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bitmap</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cnt</span>
+            <span class="k">elif</span> <span class="n">word</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;专用符号&#39;</span> <span class="ow">and</span> <span class="n">word</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span><span class="p">:</span>
+                <span class="n">left_par</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bitmap</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cnt</span>
+                <span class="n">cnt</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">cnt</span> <span class="o">&lt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">left_par</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;{&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">error_msg_box</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;第&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">word</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;行’}‘无匹配&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bitmap</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cnt</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="norm_C0_compiler._error"><a class="viewcode-back" href="../../grammar_analysis/compiler.html#grammar_analysis.utils.norm_C0_compiler._error">[文档]</a>    <span class="k">def</span> <span class="nf">_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hint</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -575,7 +602,15 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">wd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curword</span><span class="p">()</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;line: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">wd</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">+</span> <span class="n">hint</span> 
-        <span class="bp">self</span><span class="o">.</span><span class="n">error_msg_box</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_msg_box</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">wd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curword</span><span class="p">()</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitmap</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">words_p</span><span class="p">]</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">words_p</span><span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitmap</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">words_p</span><span class="p">]</span> <span class="o">==</span> <span class="n">cnt</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">wd</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;专用符号&#39;</span> <span class="ow">and</span> <span class="n">wd</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;;&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">wd</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span> <span class="s1">&#39;关键字&#39;</span> <span class="ow">and</span> <span class="n">wd</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ELSE&#39;</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_getword</span><span class="p">()</span>
+                <span class="n">wd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curword</span><span class="p">()</span> </div>
     
 <div class="viewcode-block" id="norm_C0_compiler.s_read"><a class="viewcode-back" href="../../grammar_analysis/compiler.html#grammar_analysis.utils.norm_C0_compiler.s_read">[文档]</a>    <span class="k">def</span> <span class="nf">s_read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -624,7 +659,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_getword</span><span class="p">()</span>
         <span class="n">wd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curword</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">wd</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;字符串&#39;</span><span class="p">:</span>
-            <span class="c1">#   由于Pcode没有具体处理字符串的方法，所以简化为一条指令</span>
+            <span class="c1">#   由于Pcode没有具体处理字符串的方法，所以增添LDS指令</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">wd</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_insert_display</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_lev</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lookup_variable</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">lev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;LDS&quot;</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="n">lev</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gen_Pcode</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
             <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;WRS&quot;</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_gen_Pcode</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_getword</span><span class="p">()</span>
@@ -644,20 +686,27 @@
             <span class="k">return</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_getword</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">True</span></div>
-    
+   
 <div class="viewcode-block" id="norm_C0_compiler.s_return"><a class="viewcode-back" href="../../grammar_analysis/compiler.html#grammar_analysis.utils.norm_C0_compiler.s_return">[文档]</a>    <span class="k">def</span> <span class="nf">s_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            ＜返回语句＞ ::=  return [ ‘(’＜表达式＞’)’ ] </span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1">#   find return address</span>
         <span class="n">record</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">word</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ret_addr&#39;</span> <span class="ow">and</span> <span class="n">word</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_lev</span><span class="p">:</span>
-                <span class="n">record</span> <span class="o">=</span> <span class="n">word</span>
+        <span class="n">siz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">siz</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">record</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ret_addr&#39;</span><span class="p">:</span>
                 <span class="k">break</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        for word in self.display:</span>
+<span class="sd">            if word[0] == &#39;ret_addr&#39; and word[4] == self.cur_lev:</span>
+<span class="sd">                record = word</span>
+<span class="sd">                break</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">addr</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">addr</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">lev</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_getword</span><span class="p">()</span>
         <span class="n">wd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curword</span><span class="p">()</span>
@@ -693,12 +742,20 @@
         <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DIS&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gen_Pcode</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
         <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">:</span>
-            <span class="n">lev</span> <span class="o">=</span> <span class="n">word</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">word</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">lev</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_lev</span> <span class="ow">and</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ret_addr&#39;</span><span class="p">:</span>
-                <span class="n">i</span> <span class="o">=</span> <span class="n">word</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">siz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">siz</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ret_addr&#39;</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="k">break</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        for word in self.display:</span>
+<span class="sd">            lev = word[4]</span>
+<span class="sd">            name = word[0]</span>
+<span class="sd">            if lev == self.cur_lev and name == &#39;ret_addr&#39;:</span>
+<span class="sd">                i = word[3] + 1</span>
+<span class="sd">                break</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">pre_lev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -723,7 +780,7 @@
 <div class="viewcode-block" id="norm_C0_compiler.s_statement_series"><a class="viewcode-back" href="../../grammar_analysis/compiler.html#grammar_analysis.utils.norm_C0_compiler.s_statement_series">[文档]</a>    <span class="k">def</span> <span class="nf">s_statement_series</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            ＜语句序列＞ ::=  ＜语句＞｛＜语句＞｝ </span>
-<span class="sd">            </span>
+
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_statement</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="p">:</span>
@@ -735,7 +792,6 @@
                 <span class="n">wd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curword</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">break</span>
-            
         <span class="k">return</span> <span class="kc">True</span></div>
     
 <div class="viewcode-block" id="norm_C0_compiler.s_value_param_list"><a class="viewcode-back" href="../../grammar_analysis/compiler.html#grammar_analysis.utils.norm_C0_compiler.s_value_param_list">[文档]</a>    <span class="k">def</span> <span class="nf">s_value_param_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">display_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
@@ -745,8 +801,9 @@
         <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">display_index</span><span class="p">]</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">base_addr</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">display_index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">lev</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -1124,10 +1181,11 @@
                 <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_error</span><span class="p">(</span><span class="s2">&quot;未定义&quot;</span><span class="p">)</span>
                     <span class="k">return</span> <span class="kc">False</span>
+                <span class="n">i</span><span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
                 <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                 <span class="n">lev</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="n">lev</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
                 <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;LOD&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_gen_Pcode</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -1227,7 +1285,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_getword</span><span class="p">()</span>
         <span class="n">wd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curword</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">wd</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;关键字&#39;</span> <span class="ow">or</span> <span class="n">wd</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;MAIN&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_error</span><span class="p">(</span><span class="s2">&quot;应为main&quot;</span><span class="p">)</span>
+            <span class="c1">#self._error(&quot;应为main&quot;)</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;main:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gen_Pcode</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
@@ -1340,7 +1398,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_getword</span><span class="p">()</span>
             <span class="n">wd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curword</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">wd</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;标识符&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_error</span><span class="p">(</span><span class="s2">&quot;应为标识符&quot;</span><span class="p">)</span>
+                <span class="c1">#self._error(&quot;应为标识符&quot;)</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">wd</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_getword</span><span class="p">()</span>
@@ -1507,6 +1565,12 @@
                     <span class="n">p0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">words_p</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="p">:</span>
                         <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">wd</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;关键字&#39;</span> <span class="ow">and</span> <span class="n">wd</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;VOID&#39;</span><span class="p">:</span>
+            <span class="n">p0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">words</span>
+            <span class="n">wd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curword</span><span class="p">()</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_function_declaration</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">while</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">p0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">words_p</span>
             <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_function_declaration</span><span class="p">()</span>
@@ -1528,7 +1592,7 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="c1">#  debugging and test_case</span>
     
-    <span class="n">FILE_NAME</span> <span class="o">=</span> <span class="s2">&quot;/home/tarpe/shared/OnlineC0/grammar_analysis/test5.txt&quot;</span>
+    <span class="n">FILE_NAME</span> <span class="o">=</span> <span class="s2">&quot;C:</span><span class="se">\\</span><span class="s2">编译课程设计</span><span class="se">\\</span><span class="s2">OnlineC0</span><span class="se">\\</span><span class="s2">test</span><span class="se">\\</span><span class="s2">C0</span><span class="se">\\</span><span class="s2">C0_TEST1.txt&quot;</span>
     <span class="n">lexer</span> <span class="o">=</span> <span class="n">special_lexer</span><span class="p">(</span><span class="n">FILE_NAME</span><span class="p">)</span>
     <span class="n">lexer</span><span class="o">.</span><span class="n">word_analyze</span><span class="p">()</span>
     <span class="c1">#lexer.print_result()</span>
