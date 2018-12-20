@@ -16,7 +16,7 @@ def compile(request):
     context['title'] = "gramma_response"
     if request.POST:
         lexer = special_lexer()
-        compiler = Compiler()
+        #compiler = Compiler()
         test_file = request.FILES.get('test_file')
         code = request.POST['code']
         stream = request.POST['stream']
@@ -27,8 +27,10 @@ def compile(request):
             else:
                 test_code = test_file.read()
                 test_code = str(test_code.decode("utf-8")).strip()
+                test_code = test_code.replace("\r", "")
         else:
-            test_code = code
+            test_code = code.strip()
+            test_code = code.replace("\r", "")
         if not test_code:
             messages.warning(request, "测试代码不能为空")
         else:
@@ -41,8 +43,7 @@ def compile(request):
             words = lexer.RESULT
             print(words)
             errors = lexer.error_message_box
-            compiler.words = words
-            compiler.error_msg_box = errors
+            compiler = Compiler(words, errors) 
             compiler.s_program()
             display_table = compiler.display
             Pcode = compiler.code

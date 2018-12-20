@@ -1,6 +1,6 @@
-from utils import C0lexer, special_lexer
+from .utils import C0lexer, special_lexer
 import os
-from interpreter import Interpreter
+from .interpreter import Interpreter
 
 class Compiler():
     '''重构C0编译器'''
@@ -71,10 +71,12 @@ class Compiler():
             查找变量表
         '''
         lev = None
-        for record in self.display:
+        for i in range(len(self.display)-1, -1, -1):
+            record = self.display[i]
             if record[0] == name and record[-1] == self.cur_lev:
                 return record
-        for record in self.display:
+        for i in range(len(self.display)-1, -1, -1):
+            record = self.display[i]
             if record[1] == 'abp' and record[-1] == self.cur_lev:
                 lev = int(record[0])
         if lev:
@@ -96,6 +98,14 @@ class Compiler():
             if address is None:
                 address = len(self.display)
             self.display.append([name,typ,value,address,lev])
+    
+    def _force_insert_display(self, name, typ, value, address, lev):
+        '''
+            如果形参和全局变量重复，直接强制插入
+        '''
+        if address is None:
+            address = len(self.display)
+        self.display.append([name, typ, value, address, lev])
     
     def _new_lev(self):
         '''
@@ -163,7 +173,7 @@ class Compiler():
         h5 = ""
         for record in self.display:
             line = "<tr>"
-            if record[1] == "abp" or record[1] == 'ret_addr':
+            if record[1] == "abp" or record[1] == 'ret_addr' or record[1] == 'str':
                 continue
             for ele in record:
                 line += "<td>" + str(ele) + "</td>"
@@ -189,7 +199,7 @@ class Compiler():
             生成H5代码
         '''
         h5 = ""
-        for record in self.rconst:
+        for record in self.const:
             line = "<tr>"
             for ele in record:
                 line += "<td>" + str(ele) + "</td>"
@@ -503,7 +513,7 @@ class Compiler():
                 self._error("缺少标识符")
             else:
                 name = wd[3]
-                self._insert_display(name, 'int', None, None, self.cur_lev)
+                self._force_insert_display(name, 'int', None, None, self.cur_lev)
                 cnt += 1
                 self._getword()
         wd = self._curword()
@@ -519,7 +529,7 @@ class Compiler():
                     self._error("缺少标识符")
                 else:
                     name = wd[3]
-                    self._insert_display(name, 'int', None, None, self.cur_lev)
+                    self._force_insert_display(name, 'int', None, None, self.cur_lev)
                     cnt += 1
                     self._getword()
                     wd = self._curword()
@@ -544,6 +554,7 @@ class Compiler():
                 self._getword()
                 self.s_param()
                 self.s_complex_claus()
+                self._gen_Pcode(["DIS", 3,self.cur_lev, 1])
                 self.cur_lev = self.lev_stack.pop()
     
     def s_expr(self):
@@ -959,7 +970,7 @@ class Compiler():
                 self._gen_Pcode(["LDA", 0, self.display[base_addr][-1], base_addr])
                 self._getword()
                 self.s_expr()
-                self._gen_Pcode(["STO", 0, "", ""])
+                self._gen_Pcode(["STO", 38, "", ""])
                 base_addr += 1
                 wd = self._curword()
         else:
@@ -1142,7 +1153,7 @@ class Compiler():
     
 
 if __name__ == "__main__":
-    FILE_NAME = "C0_TEST5.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/OnlineC0/grammar_analysis/test6.txt"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     #lexer.print_result()

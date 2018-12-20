@@ -1,0 +1,9 @@
+int a,b,c;
+void And(int a,int b, int c, int d){}
+int Or(int a, int b,int c){
+    return (a);
+}
+int main()
+{
+    And(Or(a,b,c), Or(a,b,c), Or(a,b,c), Or(a,b,c));
+}

@@ -1,4 +1,4 @@
-from utils import special_lexer, norm_C0_compiler
+from .utils import special_lexer, norm_C0_compiler
 import os
 class Interpreter():
     def __init__(self, display_table:list, Pcode_list:list , input_stream=""):
