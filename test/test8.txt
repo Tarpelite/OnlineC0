@@ -1,0 +1,22 @@
+int a, b, c;
+
+int main()
+{
+    int lim1, lim2;
+    scanf(lim1);
+    scanf(lim2);
+    a = 0;
+    b = 0;
+    while(a<lim1)
+    {
+        printf("Now a is:", a);
+        while(b<lim2)
+        {
+            printf("Now b is:", b);
+            b = b + 1;
+        }
+        b = 0;
+        a = a + 1;
+    }
+    printf("Program completed!");
+}

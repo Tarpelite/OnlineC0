@@ -435,6 +435,7 @@ class Compiler():
             code = [name+":", "", "",""]
             self._gen_Pcode(code)
             self.s_complex_claus()
+            self._gen_Pcode(["DIS", 3, self.cur_lev, 1])
             self.cur_lev = self.lev_stack.pop()
         elif wd[2] == '关键字' and wd[3] == 'VOID':
             self._getword()
@@ -452,8 +453,8 @@ class Compiler():
                 code = [name+":", "", "",""]
                 self._gen_Pcode(code)
                 self.s_complex_claus()
+                self._gen_Pcode(["DIS", 3 , self.cur_lev, 1])
                 self.cur_lev = self.lev_stack.pop()
-                self._gen_Pcode(["EXP", 32, "", ""])
         else:
             self._error("应为INT或VOID")
 
@@ -554,7 +555,7 @@ class Compiler():
                 self._getword()
                 self.s_param()
                 self.s_complex_claus()
-                self._gen_Pcode(["DIS", 3,self.cur_lev, 1])
+                self._gen_Pcode(["DIS", 3,self.cur_lev, self.lev_stack[-1]])
                 self.cur_lev = self.lev_stack.pop()
     
     def s_expr(self):
@@ -1153,7 +1154,7 @@ class Compiler():
     
 
 if __name__ == "__main__":
-    FILE_NAME = "/home/tarpe/shared/OnlineC0/OnlineC0/grammar_analysis/test6.txt"
+    FILE_NAME = "/home/tarpe/shared/OnlineC0/OnlineC0/test/C0/C0_TEST5.TXT"
     lexer = special_lexer(FILE_NAME)
     lexer.word_analyze()
     #lexer.print_result()

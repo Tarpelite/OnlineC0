@@ -1,6 +1,6 @@
 C0编译器
 ===================
-.. autoclass:: grammar_analysis.utils.norm_C0_compiler
+.. autoclass:: grammar_analysis.complier.Complier
     :members:  
     :inherited-members:
     :private-members:  

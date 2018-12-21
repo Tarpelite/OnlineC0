@@ -42,7 +42,8 @@ class Interpreter():
         self.code_p += 1
     
     def _DIS(self, x, y):
-        self.display = x
+        self.code_p = self.run_p_stack[-1]
+        self.run_p_stack = self.run_p_stack[:-1]
         self.code_p += 1
     
     def _JMP(self, x, y):
@@ -233,7 +234,7 @@ class Interpreter():
         flag = False
         for i in range(sta + 1, len(self.Pcode)):
             record = self.Pcode[i]
-            if record[1] == "EXP" or record[1] == "EXF":
+            if record[1] == "EXP" or record[1] == "EXF" or record[1] == "DIS":
                 flag = True
                 end = i
                 break
